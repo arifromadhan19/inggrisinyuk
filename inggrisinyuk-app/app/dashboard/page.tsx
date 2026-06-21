@@ -81,7 +81,7 @@ const modules = [
   },
   {
     key: "professional",
-    name: "English For Professionals",
+    name: "Professional English",
     currentTopic: "Introducing Yourself Professionally",
     icon: Briefcase,
     colorStrip: "bg-cyan-500",
@@ -171,7 +171,7 @@ export default function DashboardPage() {
               {greetingEmoji} {greeting}, {user.sapaan} {user.panggilan}
             </p>
             <h1 className="mt-1 text-[1.75rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-[2.5rem]">
-              Yuk, latih bahasa Inggrismu!
+              Yuk, Latih Bahasa Inggrismu!
             </h1>
           </div>
 
@@ -232,9 +232,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Semua Modul + Latihan Bebas — card besar */}
-        <h3 className="mb-3 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-          Pilih Modul Latihan
-        </h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-bold text-foreground">Pilih Modul Latihan</h3>
+          <a
+            href="/dashboard/panduan"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+          >
+            <BookOpen className="size-3.5" />
+            Panduan
+          </a>
+        </div>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {modules.map((mod) => {
             const ModIcon = mod.icon

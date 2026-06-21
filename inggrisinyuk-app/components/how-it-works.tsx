@@ -4,7 +4,7 @@ const steps = [
   {
     icon: CreditCard,
     title: "Beli Akses",
-    description: "Bayar QRIS Rp 99.000, akun langsung aktif",
+    description: "Bayar QRIS Rp 99.900, akun langsung aktif",
   },
   {
     icon: KeyRound,
@@ -14,12 +14,12 @@ const steps = [
   {
     icon: BookOpen,
     title: "Pilih Modul & Topik",
-    description: "8 fitur, 6 level CEFR & 930 topik",
+    description: "8 fitur, 6 level CEFR & lebih dari 1.000 topik",
   },
   {
     icon: Bot,
-    title: "Belajar dengan AI",
-    description: "Kak Ara, AI Coach kamu, langsung melatih dan memberi feedback",
+    title: "Belajar dengan Kak Ara",
+    description: "Personal AI Coach kamu, langsung melatih dan memberi feedback",
   },
 ]
 

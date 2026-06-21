@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const REGISTERED_NUMBERS: Record<string, { name: string; sapaan: string; panggilan: string; level: string; levelName: string; avatar: string }> = {
+const REGISTERED_NUMBERS: Record<string, { name: string; sapaan: string; panggilan: string; level: string; levelName: string; avatar: string; placementTestDone?: boolean; dismissedPlacementTest?: boolean; placementTotalCorrect?: number }> = {
   "123456": { name: "Arif", sapaan: "Kak", panggilan: "Arif", level: "A1", levelName: "Beginner", avatar: "robot_03.png" },
   "08123456789": { name: "Arif", sapaan: "Kak", panggilan: "Arif", level: "A1", levelName: "Beginner", avatar: "robot_03.png" },
+  // Test accounts
+  "123": { name: "Test A", sapaan: "Kak", panggilan: "TestA", level: "A1", levelName: "Beginner", avatar: "robot_01.png", placementTestDone: false, dismissedPlacementTest: false },
+  "124": { name: "Test B", sapaan: "Kak", panggilan: "TestB", level: "B1", levelName: "Intermediate", avatar: "robot_02.png", placementTestDone: true, placementTotalCorrect: 28 },
+  "125": { name: "Test C", sapaan: "Kak", panggilan: "TestC", level: "A1", levelName: "Beginner", avatar: "robot_04.png", placementTestDone: false, dismissedPlacementTest: true },
 }
 
 export function LoginForm() {
@@ -27,7 +31,8 @@ export function LoginForm() {
     const userData = REGISTERED_NUMBERS[normalized]
     if (userData) {
       localStorage.setItem("iy_user", JSON.stringify({ phone: normalized, ...userData }))
-      window.location.href = "/dashboard"
+      const goToPlacementTest = !userData.placementTestDone && !userData.dismissedPlacementTest
+      window.location.href = goToPlacementTest ? "/dashboard/placement-test" : "/dashboard"
     } else {
       setStatus("error")
     }
@@ -116,7 +121,7 @@ export function LoginForm() {
       <p className="text-center text-sm text-muted-foreground">
         Belum punya akun?{" "}
         <a href="/beli" className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
-          Beli Akses — Rp 99.000
+          Beli Akses — Rp 99.900
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </a>
       </p>

@@ -55,14 +55,14 @@ Banyak orang Indonesia dari berbagai latar belakang ingin meningkatkan kemampuan
 
 ### 1.3 Solusi
 
-Inggrisin Yuk menjawab semua masalah tersebut dengan pendekatan yang sederhana namun powerful: **AI tutor Kak Arif yang 100% fokus ke kamu — tanpa antri, tanpa jadwal, dengan harga yang jauh lebih terjangkau dari kursus manapun.**
+Inggrisin Yuk menjawab semua masalah tersebut dengan pendekatan yang sederhana namun powerful: **AI tutor Kak Ara yang 100% fokus ke kamu — tanpa antri, tanpa jadwal, dengan harga yang jauh lebih terjangkau dari kursus manapun.**
 
-- **Sesi belajar 1-on-1 penuh — tidak ada giliran** — AI tutor Kak Arif sepenuhnya fokus ke kamu setiap sesi. Tidak perlu menunggu giliran seperti di kelas grup — semua waktu adalah waktu belajarmu
+- **Sesi belajar 1-on-1 penuh — tidak ada giliran** — AI tutor Kak Ara sepenuhnya fokus ke kamu setiap sesi. Tidak perlu menunggu giliran seperti di kelas grup — semua waktu adalah waktu belajarmu
 - **Jauh lebih murah dari private lesson** — Rp 99.000 sekali bayar untuk akses selamanya, dibandingkan Rp 500.000–2.000.000/bulan untuk tutor privat. Kualitas setara tutor pribadi, harga tidak sebanding
-- **Memanfaatkan AI terkini** — koneksi langsung ke ChatGPT dengan prompt yang sudah dikurasi oleh Kak Arif, sehingga user mendapat pengalaman belajar yang adaptif dan personal
+- **Memanfaatkan AI terkini** — koneksi langsung ke ChatGPT dengan prompt yang sudah dikurasi oleh Kak Ara, sehingga user mendapat pengalaman belajar yang adaptif dan personal
 - **Materi terstruktur berdasarkan level CEFR (A1–C2)** — setiap orang mulai dari levelnya sendiri, tidak perlu mengulang dari nol
 - **Gaya belajar santai, conversational, dan berorientasi praktik** — bukan hafalan teori, tapi langsung bicara dan berlatih
-- **7 main features**: Placement Test + 5 core modul (Vocabulary, Grammar, Speaking, Listening, Roleplay Practice) + 1 Modul Bonus Latihan Bebas — mencakup semua aspek kemampuan bahasa Inggris
+- **8 main features**: Placement Test + 5 core modul (Vocabulary, Grammar, Speaking, Listening, Roleplay Practice) + English For Professionals + 1 Modul Bonus Latihan Bebas — mencakup semua aspek kemampuan bahasa Inggris
 
 ---
 
@@ -91,7 +91,7 @@ Halaman pertama yang dilihat pengguna saat membuka aplikasi. Berfungsi sebagai p
 | Komponen | Deskripsi | Prioritas |
 |---|---|---|
 | Hero Section | Headline utama, tagline, CTA langsung **"Beli Sekarang — Rp 99.000"** | Wajib |
-| Fitur Unggulan | Highlight Placement Test + 5 core modul + 1 bonus dengan ikon dan deskripsi singkat | Wajib |
+| Fitur Unggulan | Highlight Placement Test + 5 core modul + English For Professionals + 1 bonus dengan ikon dan deskripsi singkat | Wajib |
 | Cara Kerja | Step-by-step: Beli Akses → Login → Pilih Modul → Pilih Level & Topik → Belajar di ChatGPT | Wajib |
 | Testimoni | 2–3 testimoni user nyata atau placeholder awal | Penting |
 | CTA Beli | Tombol "Beli Sekarang" menuju halaman subscription — tidak ada free trial | Wajib |
@@ -152,9 +152,9 @@ Inggrisin Yuk menggunakan sistem **passwordless login** — user cukup memasukka
 2. Diarahkan langsung ke halaman subscription/checkout
 3. Isi **nama panggilan** (wajib) + **nomor WhatsApp** (wajib) + email (opsional) → proses pembayaran QRIS
 4. Setelah pembayaran berhasil, akun otomatis terdaftar dengan data tersebut
-5. User klik "Masuk ke Dashboard" → diarahkan ke **Panduan Penggunaan** (bisa di-skip)
-6. Muncul **Placement Test modal** (bisa di-skip) → user masuk ke dashboard
-7. Level default = **A1** hingga user mengisi hasil Placement Test atau mengubah manual di Edit Profil
+5. User klik "Masuk ke Dashboard" → diarahkan ke **Placement Test** (bisa skip/nanti)
+6. Setelah Placement Test (selesai atau skip) → masuk ke **Panduan Penggunaan** → klik "Paham, Lanjut" → Dashboard
+7. Level default = **A1** — jika skip Placement Test, level tetap A1. Jika selesai tes, level otomatis tersimpan sesuai hasil
 8. Panggilan default = **"Kak"** — bisa diubah di Edit Profil kapan saja
 
 **Alur Login (Pengguna Lama):**
@@ -162,7 +162,7 @@ Inggrisin Yuk menggunakan sistem **passwordless login** — user cukup memasukka
 1. User klik "Login" di navbar
 2. Input nomor WhatsApp yang digunakan saat beli
 3. Sistem verifikasi → jika terdaftar:
-   - **Login pertama kali**: diarahkan ke **Panduan Penggunaan** (bisa di-skip) → **Placement Test modal** (bisa di-skip) → Dashboard
+   - **Login pertama kali**: → **Placement Test** (bisa skip/nanti) → **Panduan Penggunaan** → Dashboard
    - **Login selanjutnya**: langsung masuk ke dashboard
 4. Tidak ada password — nomor WA adalah satu-satunya kunci akses
 
@@ -192,93 +192,95 @@ Karena seluruh sesi belajar diarahkan ke ChatGPT, user wajib memiliki akun ChatG
 
 ### 3.4 Panduan Penggunaan
 
-Halaman panduan cara menggunakan Inggrisin Yuk. Ditampilkan otomatis setelah user pertama kali berhasil membayar atau login pertama kali. User yang melewati (skip) dapat membukanya kembali kapan saja dari dashboard.
+Halaman panduan cara setup ChatGPT sebelum mulai belajar. Ditampilkan otomatis setelah Placement Test (baik setelah selesai tes maupun setelah skip/nanti). User yang melewati dapat membukanya kembali kapan saja dari dashboard.
 
 **Trigger Tampil & Urutan:**
 
 | Kondisi | Urutan |
 |---|---|
-| Setelah pembayaran berhasil | Order ID konfirmasi → klik "Masuk ke Dashboard" → **Panduan Penggunaan** → **Placement Test modal** → Dashboard |
-| Login pertama kali | Verifikasi WA berhasil → **Panduan Penggunaan** → **Placement Test modal** → Dashboard |
-| Akses ulang | Tombol "Panduan Penggunaan" di dashboard — bisa dibuka kapan saja |
+| Setelah pembayaran berhasil | Order ID konfirmasi → klik "Masuk ke Dashboard" → **Placement Test** → **Panduan Penggunaan** → Dashboard |
+| Login pertama kali | Verifikasi WA berhasil → **Placement Test** → **Panduan Penggunaan** → Dashboard |
+| Placement Test selesai | Hasil tes tersimpan → otomatis redirect ke Panduan Penggunaan |
+| Placement Test di-skip (Nanti) | Level di-set A1 → otomatis redirect ke Panduan Penggunaan |
+| Akses ulang | Tombol "Panduan" di dashboard — bisa dibuka kapan saja |
 
-> Panduan Penggunaan dan Placement Test modal keduanya **bisa di-skip**. Keduanya juga tersedia kembali dari dashboard kapan saja.
+**Konten Panduan — Per Platform:**
 
-**Konten Panduan — 4 Langkah:**
+Panduan menampilkan 3 tab platform: **Android**, **iPhone / iPad**, dan **Laptop / PC**. User memilih tab yang sesuai perangkatnya.
 
-**Langkah 1 — Buat Akun ChatGPT**
+**Tab Android:**
 
-Karena seluruh sesi belajar berlangsung di ChatGPT, user wajib memiliki akun ChatGPT sebelum mulai. Akun gratis sudah cukup — tidak perlu berlangganan ChatGPT Plus.
-
-| Digunakan untuk | Keterangan |
-|---|---|
-| Vocabulary, Grammar, Speaking, Listening, Roleplay Practice | Semua modul utama menggunakan ChatGPT |
-| Tool AI — Teleprompter, Pronunciation, Vocab AI, Harry Potter AI | Semua tool bonus juga menggunakan ChatGPT |
-
-**Langkah 2 — Download Aplikasi (Pengguna Mobile)**
-
-| Platform | Tindakan | Keterangan |
+| Langkah | Tindakan | CTA |
 |---|---|---|
-| **Android** | Klik tombol "Download di Google Play" → redirect ke Play Store | ChatGPT app |
-| **iOS** | Klik tombol "Download di App Store" → redirect ke App Store | ChatGPT app |
-| **Laptop/Desktop** | Tidak perlu download | Akses langsung via browser — chatgpt.com |
+| 1 | Download ChatGPT | Tombol "Download ChatGPT di Play Store" → `play.google.com/store/apps/details?id=com.openai.chatgpt` |
+| 2 | Download Chrome (jika belum) | Tombol "Download Chrome di Play Store" → `play.google.com/store/apps/details?id=com.android.chrome` |
+| 3 | Daftar & Login ChatGPT | Buka app ChatGPT, buat akun gratis atau login — tidak perlu ChatGPT Plus |
 
-> Tombol Play Store dan App Store hanya muncul di halaman panduan untuk pengguna mobile.
+**Tab iPhone / iPad (iOS):**
 
-**Langkah 3 — Login ke ChatGPT**
-
-Sebelum klik topik pertama, pastikan sudah login di ChatGPT:
-- **Mobile**: Login di aplikasi ChatGPT yang sudah didownload
-- **Web/Desktop**: Login di chatgpt.com di browser
-
-Ketika user klik topik di Inggrisin Yuk, sistem otomatis membuka ChatGPT dengan sesi belajar yang sudah siap — tanpa setup manual.
-
-**Langkah 4 — Cara Menggunakan Inggrisin Yuk**
-
-| # | Langkah | Penjelasan |
+| Langkah | Tindakan | CTA |
 |---|---|---|
-| 1 | Login ke Inggrisin Yuk | Masukkan nomor WhatsApp yang digunakan saat beli |
-| 2 | Pilih Modul di Dashboard | Klik module card yang ingin dipelajari |
-| 3 | Pilih Level & Topik | Pilih level CEFR dan klik topik hari ini (Day X) |
-| 4 | Klik "Mulai Belajar" | Sistem generate URL ChatGPT secara otomatis |
-| 5 | Belajar di ChatGPT | AI tutor Kak Arif langsung membimbing sesi belajar |
-| 6 | Kembali ke Aplikasi | Topik otomatis tertandai — pantau progress kamu |
+| 1 | Download ChatGPT | Tombol "Download ChatGPT di App Store" → `apps.apple.com/app/chatgpt/id6448311069` |
+| 2 | Download Chrome (jika belum) | Tombol "Download Chrome di App Store" → `apps.apple.com/app/google-chrome/id535886823` |
+| 3 | Daftar & Login ChatGPT | Buka app ChatGPT, buat akun gratis atau login |
+
+**Tab Laptop / PC (Desktop):**
+
+| Langkah | Tindakan | CTA |
+|---|---|---|
+| 1 | Siapkan Browser | Tombol "Download Chrome" → `google.com/chrome` dan "Download Firefox" → `mozilla.org/firefox` (opsional) |
+| 2 | Daftar & Login ChatGPT | Tombol "Buka ChatGPT" → `chatgpt.com` — tidak perlu download apapun |
+
+**Info Box:**
+
+> Akun ChatGPT gratis sudah cukup. Tidak perlu berlangganan ChatGPT Plus untuk menggunakan semua modul Inggrisin Yuk.
 
 **Tombol Aksi:**
 
 | Tombol | Fungsi |
 |---|---|
-| **"Mulai Belajar →"** | Selesai baca panduan, masuk ke dashboard |
-| **"Lewati"** | Tutup panduan, langsung ke dashboard — bisa dibuka kembali kapan saja dari dashboard |
+| **"Paham, Lanjut ke Dashboard"** | Selesai baca panduan, masuk ke dashboard |
+| **"Masih bingung? Chat CS via WhatsApp"** | Buka WhatsApp ke nomor CS: **085294569271** |
+| **Ikon WhatsApp (header)** | Shortcut "Butuh bantuan?" → WhatsApp CS **085294569271** — selalu terlihat di header |
 
 ---
 
 ### 3.5 Placement Test
 
-Fitur opsional untuk membantu user mengetahui level CEFR mereka sebelum mulai belajar. Tersedia setelah login pertama kali, dan bisa diakses kembali kapan saja dari halaman Edit Profil.
+Fitur untuk membantu user mengetahui level CEFR mereka sebelum mulai belajar. Muncul otomatis setelah login pertama kali, sebelum halaman Panduan Penggunaan. Bisa diakses kembali kapan saja dari halaman Edit Profil.
 
-**Alur Placement Test:**
+**Alur Placement Test — Login Pertama:**
 
-1. Setelah Panduan Penggunaan → muncul modal: *"Mau tahu level Bahasa Inggrismu sekarang? Ikut Placement Test dulu!"* dengan pilihan **Mulai Test** atau **Skip**
-2. Jika pilih **Mulai Test** → sesi test dibuka di ChatGPT via URL dengan prompt khusus
-3. ChatGPT menjalankan sesi placement test singkat (15–20 pertanyaan adaptif)
-4. Di akhir sesi, ChatGPT memberikan rekomendasi level CEFR
-5. User kembali ke aplikasi → input level rekomendasi ke profil secara manual
-6. Jika pilih **Skip** → langsung masuk dashboard. Level default = **A1** hingga user mengubah manual di Edit Profil
+1. Setelah login pertama → otomatis diarahkan ke halaman **Placement Test** (bukan modal, melainkan halaman penuh)
+2. Halaman intro menampilkan: jumlah soal (40), estimasi waktu (±30 menit, di-highlight amber), dan petunjuk
+3. Jika pilih **"Yuk, Mulai Tes"** → tes berjalan in-app (40 soal pilihan ganda, timer 30 menit)
+4. Setelah selesai → level CEFR otomatis tersimpan ke profil → redirect ke **Panduan Penggunaan**
+5. Jika pilih **"Nanti dulu"** → level di-set ke **A1** secara otomatis → redirect ke **Panduan Penggunaan**
+
+**Alur Placement Test — Akses Ulang dari Profil:**
+
+1. User klik tombol "Mulai Yuk" / "Ulangi Tes" di halaman Edit Profil
+2. Diarahkan ke halaman Placement Test (intro → tes → hasil)
+3. Setelah selesai → level CEFR diperbarui → kembali ke Dashboard (bukan ke Panduan lagi)
 
 **Spesifikasi Placement Test:**
 
 | Atribut | Detail |
 |---|---|
-| Mekanisme | Sesi di ChatGPT via URL prompt (sama seperti modul belajar) |
-| Jumlah Soal | 15–20 pertanyaan adaptif |
-| Format | Mix: pilihan ganda, mengisi kalimat, menjawab pertanyaan singkat |
-| Output | Rekomendasi level CEFR (A1–C2) |
-| Input Hasil | Manual — user memasukkan sendiri level hasil test ke Edit Profil |
-| Level Default (jika skip) | **A1 (Beginner)** — bisa diubah kapan saja di halaman Edit Profil |
+| Mekanisme | In-app — 40 soal pilihan ganda (A/B/C/D), berjalan langsung di aplikasi |
+| Jumlah Soal | 40 soal — Grammar (15), Vocabulary (15), Reading Comprehension (10) |
+| Timer | 30 menit — hitung mundur tampil di sticky header. Auto-submit saat waktu habis |
+| Format Soal | Pilihan ganda 4 opsi (A/B/C/D). Soal makin sulit dari A1 ke C2 |
+| Scoring | **Mastery/Ceiling algorithm** — mulai dari A1, naik level jika memenuhi threshold, berhenti saat gagal threshold pertama |
+| Threshold per Level | A1: 3/5 · A2: 4/6 · B1: 5/7 · B2: 5/7 · C1: 4/6 · C2: 3/5 |
+| Output | Level CEFR otomatis tersimpan ke profil (tidak perlu input manual) |
+| Level jika Skip/Nanti | **A1 (Beginner)** — otomatis di-set, bisa diubah di Edit Profil |
+| Tampilan Hasil | Halaman hasil: kartu level, bar chart per CEFR, skor Grammar/Vocab/Reading |
+| Profil saat sudah punya skor | Menampilkan level badge, skor (X/40 benar), pesan apresiasi, tombol "Ulangi Tes" |
+| Profil saat belum diambil (dismiss) | Menampilkan badge "Belum diambil", teks semangat, tombol "Mulai Yuk" |
 | Bisa Diulang | Ya — dari halaman Edit Profil kapan saja |
 
-**Catatan:** Meskipun hasil placement test merekomendasikan level tertentu, user **tetap bebas memilih materi di level mana pun** tanpa batasan.
+**Catatan:** Meskipun hasil placement test menentukan level awal, user **tetap bebas memilih materi di level mana pun** tanpa batasan. Level bisa diubah manual di Edit Profil kapan saja.
 
 ---
 
@@ -303,8 +305,9 @@ Halaman utama setelah user login. Menampilkan sapaan berbasis waktu, progress pe
 | Heading Utama | Prompt belajar | "Mau belajar apa hari ini?" |
 | Streak Counter | Hari berturut-turut belajar | "🔥 1 hari berturut-turut · Tetap semangat!". Streak bertambah jika user membuka minimal **1 topik per hari**. Tidak ada mekanisme reset otomatis di Iterasi 1 |
 | Module Cards (5 Core) | Navigasi ke modul utama | Grid 2 kolom — Vocabulary, Speaking, Grammar, Listening, Roleplay Practice. Tiap card: ikon berwarna, nama modul, deskripsi singkat, persentase progress |
-| Module Card (Bonus) | Navigasi ke sesi Latihan Bebas | Card ke-6 berlabel "⭐ BONUS" — Latihan Bebas: 3 sesi latihan bersama Kak Arif, disesuaikan level CEFR dan terhubung ke modul aktif |
-| Warna Ikon per Modul | Identitas visual modul | Vocabulary (biru), Speaking (oranye), Grammar (kuning), Listening (ungu), Roleplay Practice (hijau), Latihan Bebas (ungu muda) |
+| Module Card (English For Professionals) | Navigasi ke modul profesional | Card berlabel **💼 PRO** — English For Professionals: 30 topik bahasa Inggris dunia kerja. Warna cyan, progress tracking 30 topik |
+| Module Card (Bonus) | Navigasi ke sesi Latihan Bebas | Card berlabel "⭐ BONUS" — Latihan Bebas: 3 sesi latihan bersama Kak Ara, disesuaikan level CEFR dan terhubung ke modul aktif |
+| Warna Ikon per Modul | Identitas visual modul | Vocabulary (biru), Speaking (oranye), Grammar (kuning), Listening (ungu), Roleplay Practice (hijau), English For Professionals (cyan), Latihan Bebas (ungu muda) |
 | Banner Download ChatGPT | Notifikasi untuk user Android/iOS | Muncul di bawah streak counter khusus untuk pengguna mobile yang belum install ChatGPT — tombol "Download ChatGPT" mengarah ke Play Store (Android) atau App Store (iOS) |
 | Tombol Panduan Penggunaan | Akses kembali panduan cara pakai aplikasi | Link/tombol kecil "📖 Panduan Penggunaan" — entry point untuk user yang ingin membaca ulang panduan yang di-skip sebelumnya |
 
@@ -347,7 +350,7 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 | 4 | Konfirmasi level CEFR | Sistem membaca level dari profil user secara otomatis |
 | 5 | Klik "Mulai Belajar" | Sistem generate URL ChatGPT dengan prompt ter-encode |
 | 6 | Tab baru terbuka | ChatGPT langsung merespons dengan sesi belajar terstruktur |
-| 7 | Belajar bersama Kak Arif | Tutor AI membimbing step-by-step sesuai level dan modul |
+| 7 | Belajar bersama Kak Ara | Tutor AI membimbing step-by-step sesuai level dan modul |
 | 8 | Kembali ke aplikasi | Topik **otomatis tertandai** (biru pudar) — bisa dibatalkan per topik jika tidak sengaja klik |
 
 **Tips Penggunaan Optimal:**
@@ -355,7 +358,7 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 - Gunakan headphone untuk latihan listening dan speaking
 - Aktifkan Voice Mode di ChatGPT untuk pengalaman speaking yang lebih natural
 - Konsisten belajar minimal **1 topik per hari** untuk menjaga streak — streak dihitung dari klik pertama topik di hari tersebut
-- Manfaatkan trigger khusus di sesi ChatGPT: `clue`, `Gas speaking!`, `How to say...`, `pause`, `end`
+- Manfaatkan trigger khusus di sesi ChatGPT: `clue`, `Let's start speaking!`, `How to say...`, `pause`, `end`
 
 ### 3.8 Edit Profil
 
@@ -377,9 +380,9 @@ Halaman untuk mengubah data personal user yang digunakan untuk personalisasi pro
 
 ---
 
-## 4. CORE FEATURES — 7 MAIN FEATURES
+## 4. CORE FEATURES — 8 MAIN FEATURES
 
-**7 Main Features Inggrisin Yuk:**
+**8 Main Features Inggrisin Yuk:**
 
 | # | Fitur | Tipe | Deskripsi Singkat |
 |---|---|---|---|
@@ -389,7 +392,8 @@ Halaman untuk mengubah data personal user yang digunakan untuk personalisasi pro
 | 4 | **Modul Speaking** | Core Module | Latihan speaking dengan feedback langsung dari AI |
 | 5 | **Modul Listening** | Core Module | Latihan memahami monolog/cerita berbahasa Inggris |
 | 6 | **Roleplay Practice** | Core Module | Simulasi percakapan nyata dengan AI sebagai lawan bicara |
-| 7 | **Modul Bonus — Latihan Bebas** | Bonus | 3 sesi latihan bebas bersama Kak Arif — CEFR-aware & terhubung ke modul aktif |
+| 7 | **English For Professionals** | Special Module | 30 topik bahasa Inggris dunia kerja — tidak terikat CEFR level, disarankan B1+ |
+| 8 | **Modul Bonus — Latihan Bebas** | Bonus | 3 sesi latihan bebas bersama Kak Ara — CEFR-aware & terhubung ke modul aktif |
 
 ---
 
@@ -406,7 +410,8 @@ Setiap modul utama (Fitur 2–6) memiliki **6 level berdasarkan CEFR (A1, A2, B1
 | Speaking | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
 | Listening | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
 | Roleplay Practice | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
-| **Total** | | **900 topik** | **30 test** | **930 item** |
+| English For Professionals | — (skill-based) | 30 topik flat | — | 30 |
+| **Total** | | **930 topik** | **30 test** | **960 item** |
 
 User memilih level CEFR dari profil mereka — sub-fitur modul langsung menampilkan Day 1–31 untuk level tersebut. User bisa ganti level kapan saja via Edit Profil.
 
@@ -427,43 +432,59 @@ User memilih level CEFR dari profil mereka — sub-fitur modul langsung menampil
 
 ### 4.2 Modul 1 — Vocabulary
 
-Membangun kosakata fungsional dan kontekstual melalui metode Box of Words, Writing Challenge, dan Speaking Practice yang dikembangkan oleh Kak Arif.
+Membangun kosakata fungsional dan kontekstual melalui metode Box of Words, Writing Challenge, dan Speaking Practice yang dikembangkan oleh Kak Ara.
 
 **Mekanisme Belajar:**
 
 1. User memilih level CEFR dan topik
-2. Klik 'Mulai' → ChatGPT terbuka dengan prompt Vocabulary Kak Arif
+2. Klik 'Mulai' → ChatGPT terbuka dengan prompt Vocabulary Kak Ara
 3. ChatGPT tampilkan Box of Words (15 kosakata + phonetic symbol UK)
-4. User mendapat Writing Challenge (2 opsi)
-5. Setelah user jawab, AI berikan Koreksi 6 Langkah
-6. Sesi diakhiri dengan Speaking Challenge
+4. User mendapat Writing Challenge — 2 mode: 📖 Mode Cerita (tulis paragraf) atau ⚡ Mode Kilat (1 kalimat per kata)
+5. Setelah user jawab, AI berikan Koreksi 8 Langkah
+6. Sesi diakhiri dengan Speaking Challenge (Langkah 8 — capstone)
 
-**Struktur Analisis & Feedback — Koreksi 6 Langkah:**
+**Struktur Analisis & Feedback — Koreksi 8 Langkah:**
 
 | # | Langkah | Output AI |
 |---|---|---|
-| 1️⃣ | **Koreksi Writing** | Tabel 3 kolom: Kalimat Asli → Penjelasan Grammar → Kalimat Benar |
-| 2️⃣ | **Analisa Penggunaan BOW** | Cek setiap kosakata dari Box of Words: ✅ tepat / ⚠️ belum tepat + contoh penggunaan yang benar |
+| 1️⃣ | **Koreksi Writing** | Tabel 3 kolom: Kalimat Asli → Kalimat Benar → **Kenapa** (akar masalah kontrastif Bahasa Indonesia, fokus mendalam ke maksimal 2 pola error terpenting). Kalimat yang sudah ≥95% benar ditandai ✅ di kolom Kalimat Asli |
+| 2️⃣ | **Analisa Penggunaan BOW** | Cek setiap kosakata dari Box of Words: ✅ tepat / ⚠️ belum tepat + contoh penggunaan yang benar. Mulai Day 6: + 🔂 Vocab Refresh (singgung balik 1–2 kata dari Day sebelumnya) |
 | 3️⃣ | **Analisa Level CEFR** | Level saat ini, kelebihan yang sudah terlihat, dan saran konkret untuk naik ke level berikutnya |
-| 4️⃣ | **Perbandingan 5W+1H** | Tabel: What / Why / Where / When / Who / How — diisi dari tulisan user + versi lebih lengkap dari AI |
+| 4️⃣ | **Perbandingan 5W+1H** | Tabel: What / Why / Where / When / Who / How — diisi dari tulisan user + versi lebih lengkap dari AI. Di bawahnya, "Paragraf Diperkaya": tiap kalimat Inggris langsung diikuti terjemahan Indonesia dalam kurung di baris bawahnya (bukan 2 blok terpisah) |
 | 5️⃣ | **Transition Words** | Rekomendasi 2–3 kata penghubung (and, because, so, however, dll.) + contoh kalimat siap pakai |
-| 6️⃣ | **Speaking Challenge** | 3 pertanyaan speaking berbasis topik yang baru dipelajari, dalam English + terjemahan Indonesia |
+| 6️⃣ | **Frasa Siap Pakai / Lexical Chunks** | 2-3 lexical chunks alami yang dipakai penutur asli untuk topik ini; cek apakah user sudah pakai (✅); sarankan 1 chunk untuk dicoba |
+| 7️⃣ | **Register Check** | Cek apakah ada kata/frasa yang register-nya tidak cocok untuk konteks topik — terlalu kasual untuk situasi formal, atau terlalu kaku untuk percakapan sehari-hari. ✅ lewati jika sudah konsisten |
+| 8️⃣ | **Speaking Challenge** | 3 pertanyaan speaking berbasis topik yang baru dipelajari; minimal 1 pertanyaan dirancang memicu pemakaian ulang pola yang baru dikoreksi di Langkah 1 (retrieval practice), dalam English + terjemahan Indonesia |
+
+*Metodologi koreksi berbasis riset Second Language Acquisition: kolom "Kenapa" menerapkan **L1-contrastive explanation** (penjelasan akar masalah lewat perbandingan pola Bahasa Indonesia vs English), pembatasan ke 2 pola per sesi menerapkan **focused corrective feedback** (lebih efektif untuk pemula dibanding mengoreksi semua kesalahan sekaligus), dan keterkaitan Speaking Challenge dengan koreksi menerapkan **retrieval practice** (Output Hypothesis) supaya koreksi tidak cuma dibaca sekali lalu lupa.*
 
 **30 Topik Vocabulary:**
 
+**📚 Day 1–21 — Core A1:**
+
 | Day | Topik | Day | Topik | Day | Topik |
 |---|---|---|---|---|---|
-| 1 | Daily Routines | 11 | Health & Body | 21 | Hobbies & Free Time |
-| 2 | Family & People | 12 | House & Furniture | 22 | Common Collocations |
-| 3 | Food & Drinks | 13 | Weather | 23 | Phrasal Verbs (Everyday) |
-| 4 | Jobs & Workplaces | 14 | Basic Descriptions | 24 | Phrasal Verbs (Work & Study) |
-| 5 | Places in Town | 15 | Travel & Holidays | 25 | Expressing Opinions |
-| 6 | Common Actions | 16 | Ordering Food | 26 | Advanced Feelings & Emotions |
-| 7 | Feelings & Emotions | 17 | Technology & Gadgets | 27 | Business Basics |
-| 8 | Shopping & Money | 18 | School & Learning | 28 | Idioms for Daily Situations |
-| 9 | Transportation | 19 | Describing Places | 29 | Transition Words for Speaking |
-| 10 | Time & Calendar | 20 | Describing People | 30 | Business Talk |
-| **31** | **Level Placement Test** | | | | |
+| 1 | Daily Routines & Activities | 8 | Time & Calendar | 15 | Basic Descriptions |
+| 2 | Family & People | 9 | Feelings & Emotions | 16 | Describing People |
+| 3 | Food & Drinks | 10 | Health & Body | 17 | Describing Places |
+| 4 | Shopping & Money | 11 | House & Furniture | 18 | Ordering Food |
+| 5 | Travel & Transportation | 12 | Weather | 19 | Travel & Holidays |
+| 6 | Common Actions | 13 | Jobs & Workplaces | 20 | Technology & Gadgets |
+| 7 | Places in Town | 14 | School & Learning | 21 | Hobbies & Free Time |
+
+> 🌉 **Jembatan ke A2 (Day 22–30):** Topik-topik berikut melampaui batas ketat CEFR A1 dan dirancang sebagai transisi menuju A2 — phrasal verbs (A2), collocations, fixed expressions, dan business vocabulary (A2/B1). Wajar jika terasa lebih menantang; itulah tujuannya. Siswa yang sudah solid di Day 1–21 dan ingin langsung naik ke A2 dapat juga lanjut ke Vocabulary A2.
+
+**🌉 Day 22–30 — A1→A2 Bridge:**
+
+| Day | Topik | Day | Topik | Day | Topik |
+|---|---|---|---|---|---|
+| 22 | Transition Words for Speaking | 25 | Phrasal Verbs (Work & Study) | 28 | Common Fixed Expressions |
+| 23 | Common Collocations | 26 | Expressing Opinions | 29 | Business Basics |
+| 24 | Phrasal Verbs (Everyday) | 27 | Advanced Feelings & Emotions | 30 | Business Talk |
+
+**Day 31 — Level Placement Test**
+
+*Progresi: Day 1–21 membangun kosakata A1 yang solid (isolated words, simple sentences, topik personal & konkret). Day 22–30 memperkenalkan register lebih kompleks sebagai jembatan ke A2. Urutan ini final dan sudah selaras dengan materi di `Materi/A1/Vocab.md`.*
 
 **Day 31 — Level Placement Test (Vocabulary):**
 
@@ -489,7 +510,7 @@ Fokus pada grammar praktis yang langsung bisa dipakai saat berbicara, bukan gram
 2. ChatGPT buka sesi dengan penjelasan grammar detail (gaya Gen Z / millennial)
 3. Diberikan 5 contoh kalimat natural + terjemahan Indonesia
 4. 3 pertanyaan speaking yang memaksa pakai grammar tersebut
-5. Trigger `Gas speaking!` → masuk mode speaking satu per satu
+5. Trigger `Let's start speaking!` → masuk mode speaking satu per satu
 6. Wajib 'Repeat After Me' sebelum lanjut ke pertanyaan berikutnya
 
 **Struktur Analisis & Feedback — Grammar:**
@@ -505,24 +526,33 @@ Fokus pada grammar praktis yang langsung bisa dipakai saat berbicara, bukan gram
 
 **30 Topik Grammar:**
 
+**📚 Day 1–21 — Core A1:**
+
 | Day | Topik | Day | Topik |
 |---|---|---|---|
-| 1 | Kata Benda (Noun) | 16 | Have been + V-ing |
-| 2 | Kata Sifat (Adjective) | 17 | Used to + Verb 1 |
-| 3 | Verb 1 (Sehari-hari) | 18 | tobe + used to + V-ing |
-| 4 | Kapan pakai Verb s/es | 19 | Will (akan/masa depan) |
-| 5 | Verb 2 (tadi/kemarin) | 20 | Will VS Going to |
-| 6 | Verb 1 VS Verb 2 | 21 | Have to VS Must |
-| 7 | Do/does/did | 22 | Penyesalan datang terlambat |
-| 8 | Is/am/are VS Was/were | 23 | Berandai-andai (If I were...) |
-| 9 | Do/does VS is/am/are | 24 | 5W + 1H |
-| 10 | V-ing (sedang terjadi) | 25 | Could, Would, Should |
-| 11 | Did VS was/were | 26 | Kalimat Passive (di/ter) |
-| 12 | Verb 3 (sudah terjadi) | 27 | Transition Words |
-| 13 | Verb 2 VS Verb 3 | 28 | Who VS Whom |
-| 14 | Kapan pakai be | 29 | Which & Whose |
-| 15 | Kapan pakai been | 30 | Comparative & Superlative |
-| **31** | **Level Placement Test** | | |
+| 1 | Kata Benda (Noun) | 12 | Verb 3 (sudah terjadi) |
+| 2 | Kata Sifat (Adjective) | 13 | Verb 2 VS Verb 3 |
+| 3 | Verb 1 (Sehari-hari) | 14 | Kapan pakai be |
+| 4 | Kapan pakai Verb s/es | 15 | Kapan pakai been |
+| 5 | Verb 2 (tadi/kemarin) | 16 | Have been + V-ing |
+| 6 | Verb 1 VS Verb 2 | 17 | Used to + Verb 1 |
+| 7 | Do/does/did | 18 | tobe + used to + V-ing |
+| 8 | Is/am/are VS Was/were | 19 | Will (akan/masa depan) |
+| 9 | Do/does VS is/am/are | 20 | Will VS Going to |
+| 10 | V-ing (sedang terjadi) | 21 | Have to VS Must |
+| 11 | Did VS was/were | | |
+
+> 🌉 **Jembatan ke A2 (Day 22–30):** Topik-topik berikut memperkenalkan struktur grammar yang melampaui A1 murni — conditional, passive voice, relative pronouns, dan discourse markers. Wajar jika terasa lebih menantang; ini mempersiapkan transisi ke level A2.
+
+**🌉 Day 22–30 — A1→A2 Bridge:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 22 | Penyesalan datang terlambat | 27 | Transition Words |
+| 23 | Berandai-andai (If I were...) | 28 | Who VS Whom |
+| 24 | 5W + 1H | 29 | Which & Whose |
+| 25 | Could, Would, Should | 30 | Comparative & Superlative |
+| 26 | Kalimat Passive (di/ter) | | |
 
 **Day 31 — Level Placement Test (Grammar):**
 
@@ -546,7 +576,7 @@ Melatih kemampuan berbicara dalam berbagai situasi nyata dengan feedback langsun
 
 1. User pilih level dan topik speaking
 2. ChatGPT berikan penjelasan materi speaking + 3–5 frasa contoh siap pakai
-3. Trigger `Gas speaking!` → sesi speaking dimulai
+3. Trigger `Let's start speaking!` → sesi speaking dimulai
 4. Pertanyaan diberikan satu per satu dalam English + terjemahan Indonesia
 5. Setelah user jawab, AI tampilkan tabel perbandingan (Kalimat User vs Native Speaker)
 6. Sesi berjalan adaptif: lancar → tambah kompleksitas; macet → pattern drill
@@ -564,24 +594,33 @@ Melatih kemampuan berbicara dalam berbagai situasi nyata dengan feedback langsun
 
 **30 Topik Speaking:**
 
+**📚 Day 1–21 — Core A1:**
+
 | Day | Topik | Day | Topik |
 |---|---|---|---|
-| 1 | Introducing Yourself | 16 | Agreeing and Disagreeing |
-| 2 | Asking Questions | 17 | Making Suggestions |
-| 3 | Talking About Daily Routines | 18 | Making Invitations |
-| 4 | Describing People | 19 | Apologizing and Responding |
-| 5 | Describing Things Around You | 20 | Offering Help |
-| 6 | Talking About Time | 21 | Talking About Problems & Solutions |
-| 7 | Likes and Dislikes | 22 | Explaining Something Clearly |
-| 8 | Giving Directions | 23 | Comparing People, Things, and Places |
-| 9 | Ordering Food and Drinks | 24 | Telling a Short Story |
-| 10 | Making Small Talk | 25 | Giving Instructions (How to...) |
-| 11 | Talking About Past Experiences | 26 | Making Complaints Politely |
-| 12 | Talking About Future Plans | 27 | Talking About Expectations |
-| 13 | Describing Places | 28 | Talking About Habits (Past & Present) |
-| 14 | Talking About Frequency | 29 | Talking About Preferences |
-| 15 | Giving Opinions | 30 | Mini Presentation |
-| **31** | **Level Placement Test** | | |
+| 1 | Introducing Yourself | 12 | Talking About Future Plans |
+| 2 | Asking Questions | 13 | Describing Places |
+| 3 | Talking About Daily Routines | 14 | Talking About Frequency |
+| 4 | Describing People | 15 | Giving Opinions |
+| 5 | Describing Things Around You | 16 | Agreeing and Disagreeing |
+| 6 | Talking About Time | 17 | Making Suggestions |
+| 7 | Likes and Dislikes | 18 | Making Invitations |
+| 8 | Giving Directions | 19 | Apologizing and Responding |
+| 9 | Ordering Food and Drinks | 20 | Offering Help |
+| 10 | Making Small Talk | 21 | Talking About Problems & Solutions |
+| 11 | Talking About Past Experiences | | |
+
+> 🌉 **Jembatan ke A2 (Day 22–30):** Topik-topik berikut melampaui A1 murni — melibatkan kemampuan menjelaskan, membandingkan, bercerita, dan presentasi singkat yang menuntut kelancaran dan kosakata A2. Wajar jika terasa lebih menantang.
+
+**🌉 Day 22–30 — A1→A2 Bridge:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 22 | Explaining Something Clearly | 27 | Talking About Expectations |
+| 23 | Comparing People, Things, and Places | 28 | Talking About Habits (Past & Present) |
+| 24 | Telling a Short Story | 29 | Talking About Preferences |
+| 25 | Giving Instructions (How to...) | 30 | Mini Presentation |
+| 26 | Making Complaints Politely | | |
 
 **Day 31 — Level Placement Test (Speaking):**
 
@@ -605,7 +644,7 @@ Melatih kemampuan mendengarkan melalui cerita/monolog dalam Bahasa Inggris, diik
 1. User pilih level dan topik listening
 2. ChatGPT langsung tampilkan cerita/monolog (4–8 kalimat untuk A1–B1, 8–15 kalimat untuk B2–C2)
 3. Di bawah cerita, tampil tabel vocabulary penting dari monolog
-4. Trigger `Gas speaking!` → comprehension questions satu per satu
+4. Trigger `Let's start speaking!` → comprehension questions satu per satu
 5. Pertanyaan dalam English + terjemahan Indonesia
 6. Jawaban salah → AI koreksi berdasarkan text monolog, lalu ulangi pertanyaan
 
@@ -621,24 +660,33 @@ Melatih kemampuan mendengarkan melalui cerita/monolog dalam Bahasa Inggris, diik
 
 **30 Topik Listening:**
 
+**📚 Day 1–21 — Core A1:**
+
 | Day | Topik | Day | Topik |
 |---|---|---|---|
-| 1 | My Morning Routine Story | 16 | The Best Gift I Ever Received |
-| 2 | How I Spent My Weekend | 17 | A Funny or Embarrassing Moment |
-| 3 | A Person I Admire | 18 | A Challenge I Faced |
-| 4 | My Favorite Place in My City | 19 | A Hobby That I Love |
-| 5 | A Simple Memory From School | 20 | A Friend Who Helped Me |
-| 6 | My Daily Life at Home | 21 | A Special Event I Attended |
-| 7 | A Short Story About a Pet | 22 | A Day That Changed My Life |
-| 8 | My First Day at Work or School | 23 | My Personal Success Story |
-| 9 | A Time I Got Lost in a New Place | 24 | What I Learned From a Mistake |
-| 10 | A Meal I Will Never Forget | 25 | How I Organize My Day |
-| 11 | Unexpected Things That Happened | 26 | A Project I Completed |
-| 12 | My Next Plan or Goal | 27 | How I Deal With Stress or Pressure |
-| 13 | A Time I Felt Sick | 28 | Meeting Someone New |
-| 14 | A Problem I Solved on My Own | 29 | A Dream or Ambition That I Have |
-| 15 | My Most Memorable Trip | 30 | A Lesson from a Past Story |
-| **31** | **Level Placement Test** | | |
+| 1 | My Morning Routine Story | 12 | My Next Plan or Goal |
+| 2 | How I Spent My Weekend | 13 | A Time I Felt Sick |
+| 3 | A Person I Admire | 14 | A Problem I Solved on My Own |
+| 4 | My Favorite Place in My City | 15 | My Most Memorable Trip |
+| 5 | A Simple Memory From School | 16 | The Best Gift I Ever Received |
+| 6 | My Daily Life at Home | 17 | A Funny or Embarrassing Moment |
+| 7 | A Short Story About a Pet | 18 | A Challenge I Faced |
+| 8 | My First Day at Work or School | 19 | A Hobby That I Love |
+| 9 | A Time I Got Lost in a New Place | 20 | A Friend Who Helped Me |
+| 10 | A Meal I Will Never Forget | 21 | A Special Event I Attended |
+| 11 | Unexpected Things That Happened | | |
+
+> 🌉 **Jembatan ke A2 (Day 22–30):** Monolog-monolog berikut menggunakan kosakata dan struktur kalimat yang lebih kompleks — refleksi personal, cerita sukses, manajemen stres, dan ambisi. Menuntut tingkat pemahaman yang lebih dalam dibanding A1 murni.
+
+**🌉 Day 22–30 — A1→A2 Bridge:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 22 | A Day That Changed My Life | 27 | How I Deal With Stress or Pressure |
+| 23 | My Personal Success Story | 28 | Meeting Someone New |
+| 24 | What I Learned From a Mistake | 29 | A Dream or Ambition That I Have |
+| 25 | How I Organize My Day | 30 | A Lesson from a Past Story |
+| 26 | A Project I Completed | | |
 
 **Day 31 — Level Placement Test (Listening):**
 
@@ -678,24 +726,33 @@ Modul puncak yang menggabungkan semua skill dalam simulasi percakapan nyata deng
 
 **30 Topik Roleplay Practice:**
 
+**📚 Day 1–21 — Core A1:**
+
 | Day | Topik | Day | Topik |
 |---|---|---|---|
-| 1 | Meeting New People | 16 | Daily Problem Advice |
-| 2 | Talking About Days | 17 | Group Activity Planning |
-| 3 | Weekend Activity Plans | 18 | How-To Explanation |
-| 4 | Discussing the Weather | 19 | Conversation Follow-Up |
-| 5 | Movie or Series Talk | 20 | Health & Wellness Talk |
-| 6 | Asking About Hobbies | 21 | Giving Helpful Suggestions |
-| 7 | Borrowing Household Items | 22 | Talking About Feelings |
-| 8 | Transportation Plan Talk | 23 | Making Simple Complaints |
-| 9 | Comparing Product Choices | 24 | Telling Short Stories |
-| 10 | Simple Etiquette Talk | 25 | Asking About Experiences |
-| 11 | Delivery Problem Help | 26 | Discussing Future Plans |
-| 12 | Room/Apartment Inquiry | 27 | Asking for Clarification |
-| 13 | Community Event Talk | 28 | Handling Misunderstandings |
-| 14 | Reacting to News | 29 | Solving Small Conflicts |
-| 15 | Sharing Achievements | 30 | Ordering Coffee Drinks |
-| **31** | **Level Placement Test** | | |
+| 1 | Meeting New People | 12 | Room/Apartment Inquiry |
+| 2 | Talking About Days | 13 | Community Event Talk |
+| 3 | Weekend Activity Plans | 14 | Reacting to News |
+| 4 | Discussing the Weather | 15 | Sharing Achievements |
+| 5 | Movie or Series Talk | 16 | Daily Problem Advice |
+| 6 | Asking About Hobbies | 17 | Group Activity Planning |
+| 7 | Borrowing Household Items | 18 | How-To Explanation |
+| 8 | Transportation Plan Talk | 19 | Conversation Follow-Up |
+| 9 | Comparing Product Choices | 20 | Health & Wellness Talk |
+| 10 | Simple Etiquette Talk | 21 | Giving Helpful Suggestions |
+| 11 | Delivery Problem Help | | |
+
+> 🌉 **Jembatan ke A2 (Day 22–30):** Skenario roleplay berikut melibatkan situasi yang lebih kompleks — mengekspresikan perasaan, membuat keluhan, klarifikasi, menangani konflik, dan storytelling. Menuntut kelancaran dan improvisasi A2.
+
+**🌉 Day 22–30 — A1→A2 Bridge:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 22 | Talking About Feelings | 27 | Asking for Clarification |
+| 23 | Making Simple Complaints | 28 | Handling Misunderstandings |
+| 24 | Telling Short Stories | 29 | Solving Small Conflicts |
+| 25 | Asking About Experiences | 30 | Ordering Coffee Drinks |
+| 26 | Discussing Future Plans | | |
 
 **Day 31 — Level Placement Test (Roleplay Practice):**
 
@@ -713,7 +770,7 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Roleplay Practice di satu l
 
 ### 4.7 Modul Bonus — Latihan Bebas
 
-Modul bonus berisi 3 sesi latihan bebas bersama Kak Arif di luar jadwal modul harian. Ditandai badge **⭐ BONUS** di dashboard. Tidak memiliki progress tracking seperti modul utama.
+Modul bonus berisi 3 sesi latihan bebas bersama Kak Ara di luar jadwal modul harian. Ditandai badge **⭐ BONUS** di dashboard. Tidak memiliki progress tracking seperti modul utama.
 
 **Dua Keunggulan vs Kompetitor:**
 
@@ -726,8 +783,8 @@ Modul bonus berisi 3 sesi latihan bebas bersama Kak Arif di luar jadwal modul ha
 
 | # | Nama | Deskripsi | Mekanisme |
 |---|---|---|---|
-| 01 | **Baca Bareng Kak Arif** | Latih cara ngomong Bahasa Inggris dengan membaca kalimat yang tampil seperti teleprompter. Fokus melatih accent dan pronunciation biar makin natural | Klik → ChatGPT terbuka dengan teks sesuai level CEFR + Kak Arif koreksi accent dan beri tips langsung |
-| 02 | **Pronunciation Challenge** | Terima tantangan membaca kata atau kalimat, lalu ucapkan — Kak Arif koreksi pengucapan dan jelaskan mengapa salah agar tidak terulang | Klik → ChatGPT dengan kata-kata sesuai level CEFR + koreksi detail + penjelasan mengapa salah |
+| 01 | **Baca Bareng Kak Ara** | Latih cara ngomong Bahasa Inggris dengan membaca kalimat yang tampil seperti teleprompter. Fokus melatih accent dan pronunciation biar makin natural | Klik → ChatGPT terbuka dengan teks sesuai level CEFR + Kak Ara koreksi accent dan beri tips langsung |
+| 02 | **Pronunciation Challenge** | Terima tantangan membaca kata atau kalimat, lalu ucapkan — Kak Ara koreksi pengucapan dan jelaskan mengapa salah agar tidak terulang | Klik → ChatGPT dengan kata-kata sesuai level CEFR + koreksi detail + penjelasan mengapa salah |
 | 03 | **Vocab Mission** | Bukan sekadar hafal arti — langsung bikin kalimat pakai kata baru. Vocab lebih nempel karena langsung dipraktikkan dengan konteks nyata | Klik → ChatGPT dengan vocab dari level aktif user. Pilihan: vocab bebas atau dari Day yang sedang dipelajari |
 
 **Mekanisme CEFR-aware per Level:**
@@ -744,10 +801,57 @@ Saat memilih latihan, user dapat memilih sumber konten:
 
 | Pilihan | Konten |
 |---|---|
-| **"Bebas"** | Kak Arif pilihkan konten sesuai level CEFR aktif |
+| **"Bebas"** | Kak Ara pilihkan konten sesuai level CEFR aktif |
 | **"Dari modul saya"** | Gunakan konten dari modul + Day yang sedang dipelajari user (contoh: setelah Vocabulary Day 5 → Vocab Mission langsung pakai kata dari Day 5) |
 
 **Catatan:** Tidak ada topik harian dan tidak ada progress tracking — Latihan Bebas bisa digunakan kapan saja sebagai suplemen belajar. Akses tersedia untuk semua user lifetime.
+
+---
+
+### 4.8 Modul Khusus — English For Professionals
+
+Modul khusus yang dirancang untuk pengguna yang ingin menguasai bahasa Inggris dalam konteks profesional dan dunia kerja. Berbeda dari 5 modul utama, modul ini tidak terikat pada level CEFR — tersedia sebagai **30 topik flat** yang fokus pada skill profesional nyata. Disarankan untuk pengguna level B1 ke atas, tetapi dapat diakses siapa saja yang ingin mulai mempersiapkan diri untuk karier berbahasa Inggris.
+
+**Mekanisme Belajar:**
+1. User pilih topik dari daftar 30 topik profesional
+2. ChatGPT terbuka dengan prompt Professional English Coach spesifik untuk topik tersebut
+3. AI tampilkan vocabulary + frasa siap pakai untuk konteks kerja tersebut
+4. Writing/Speaking Challenge berbasis situasi kerja nyata — email, meeting, presentasi, interview
+5. Koreksi & feedback spesifik untuk professional context (naturalness, formality level, register)
+
+**Identitas Visual:** Ikon 💼, warna cyan, badge "PRO" di dashboard.
+
+**30 Topik English For Professionals:**
+
+**📚 Day 1–21 — Core Professional Skills:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 1 | Introducing Yourself Professionally | 12 | Writing Meeting Minutes |
+| 2 | Writing Professional Emails | 13 | Business Phone Calls |
+| 3 | Business Meetings — Opening & Closing | 14 | Video Call Etiquette |
+| 4 | Giving a Presentation | 15 | Professional Small Talk |
+| 5 | Making & Rejecting Offers | 16 | Handling Complaints from Clients |
+| 6 | Writing a CV/Resume in English | 17 | Writing a Professional Report |
+| 7 | Job Interview — Common Questions | 18 | Project Updates & Status Reports |
+| 8 | Job Interview — Behavioral Questions | 19 | Business Networking |
+| 9 | Negotiating a Salary | 20 | Presenting Data & Statistics |
+| 10 | Giving & Receiving Feedback at Work | 21 | Asking for Clarification Professionally |
+| 11 | Leading a Team Meeting | | |
+
+> 🌉 **Advanced Professional Skills (Day 22–30):** Topik-topik berikut lebih cocok untuk pengguna level B2 ke atas — melibatkan negosiasi kompleks, cross-cultural communication, business proposals, dan advanced presentations.
+
+**🌉 Day 22–30 — Advanced Professional:**
+
+| Day | Topik | Day | Topik |
+|---|---|---|---|
+| 22 | Delegating Tasks | 27 | Giving a Performance Review |
+| 23 | Discussing Deadlines & Priorities | 28 | Writing a Business Proposal |
+| 24 | Handling Difficult Situations at Work | 29 | Client Relationship Management |
+| 25 | Professional Social Media & LinkedIn | 30 | Advanced Business Presentations |
+| 26 | Cross-Cultural Communication | | |
+
+**Catatan:** English For Professionals tidak memiliki Level Placement Test (Day 31) — modul ini skill-based, bukan level-based. Progress tracking tetap tersedia (30 topik yang bisa ditandai selesai).
 
 ---
 
@@ -775,9 +879,9 @@ https://chatgpt.com/?prompt=[PROMPT_TERENCODE]
 
 | Komponen | Isi | Contoh |
 |---|---|---|
-| Identitas User | Nama + panggilan pilihan user | `Namaku Arif. Panggilanku: Mas. Panggil aku Mas Arif.` |
+| Identitas User | Sapaan + nama panggilan dari profil | `Panggil aku Mas Arif.` |
 | Level CEFR | Level aktif user | `Level bahasa Inggrisku: A1 (Beginner).` |
-| Identitas Tutor | Karakter AI | `Kamu Kak Arif dari Inggrisin Yuk.` |
+| Identitas Tutor | Karakter AI | `Kamu Kak Ara, personal AI Coach kamu, dari Inggrisin Yuk.` |
 | Gaya Bahasa | Instruksi karakter | Santai, tunjukkan lewat gaya, pakai emoji secukupnya |
 | Bahasa Koreksi | Progressif per level | A1–A2: Indonesia. B1–B2: Mix. C1–C2: Full English |
 | Phonetic Symbol | Format pelafalan | UK English, ditampilkan dalam tanda `/ /` |
@@ -793,27 +897,27 @@ https://chatgpt.com/?prompt=[PROMPT_TERENCODE]
 **Catatan Penggunaan:**
 - Seluruh sesi belajar di Iterasi 1 menggunakan **ChatGPT** sebagai satu-satunya AI engine.
 - Aktifkan **Voice Mode** di ChatGPT untuk pengalaman Speaking dan Roleplay Practice yang lebih natural dan interaktif.
-- Prompt Kak Arif telah dioptimalkan khusus untuk ChatGPT.
+- Prompt Kak Ara telah dioptimalkan khusus untuk ChatGPT.
 
 ### 5.3 Struktur Prompt
 
 | Komponen Prompt | Fungsi | Contoh |
 |---|---|---|
-| Identitas User | Nama + panggilan pilihan user | Namaku Arif. Panggilanku: Mas. Panggil aku Mas Arif. |
+| Identitas User | Sapaan + nama panggilan dari profil | Panggil aku Mas Arif. |
 | Level CEFR | Adaptasi kesulitan materi | Level bahasa Inggrisku: Intermediate (B1) |
 | Topik Materi | Konten yang dipelajari | Topik: Daily Routines |
-| Identitas Tutor | Konsistensi karakter AI | Kamu Kak Arif dari Inggrisin Yuk |
-| Instruksi Bahasa | Bahasa koreksi sesuai level CEFR (progressif) | A1–A2: Indonesia. B1–B2: Mix. C1–C2: Full English |
+| Identitas Tutor | Konsistensi karakter AI | Kamu Kak Ara, personal AI Coach kamu, dari Inggrisin Yuk |
+| Instruksi Bahasa | Bahasa koreksi sesuai level CEFR (progressif, gradual — lihat 5.5) | A1–A2: Indonesia dominan. B1: Indonesia + label grammar English. B2: English dominan. C1–C2: Full English |
 | Struktur Sesi | Langkah-langkah belajar | LANGKAH 1, LANGKAH 2, LANGKAH 3 |
-| Hak Cipta | Perlindungan konten | Struktur ini orisinal oleh Kak Arif, dilindungi hak cipta |
 
-### 5.4 Persona AI Tutor — Kak Arif
+### 5.4 Persona AI Tutor — Kak Ara
 
 | Atribut | Detail |
 |---|---|
-| Nama | Kak Arif |
+| Nama | Kak Ara |
+| Peran | Personal AI Coach kamu |
 | Asal | Inggrisin Yuk |
-| Gaya Bahasa | Santai, seru, relate untuk anak muda Indonesia. TIDAK menyebut diri asyik/seru — tunjukkan lewat gaya |
+| Gaya Bahasa | Santai, humble (rendah hati — tidak menggurui, hargai usaha user), dan relate untuk anak muda Indonesia. TIDAK menyebut diri asyik/seru — tunjukkan lewat gaya bicara |
 | Bahasa Koreksi | Progressif sesuai level CEFR — lihat detail di 5.5 |
 | Adaptivitas | Lancar → tambah kompleksitas. Macet → pattern drill, beri contoh, latih ulang |
 | Pujian | Hanya di akhir sesi, tidak berlebihan. Tetap friendly tapi singkat |
@@ -821,21 +925,142 @@ https://chatgpt.com/?prompt=[PROMPT_TERENCODE]
 
 ### 5.5 Kebijakan Bahasa Progressif per Level CEFR
 
-Bahasa yang digunakan Kak Arif — baik dalam penjelasan, koreksi, maupun feedback — menyesuaikan level CEFR user secara otomatis. Semakin tinggi level, semakin dominan English digunakan sehingga user terbiasa berpikir dan merespons langsung dalam Bahasa Inggris.
+Bahasa yang digunakan Kak Ara — baik dalam penjelasan, koreksi, maupun feedback — menyesuaikan level CEFR user secara **gradual**, bukan switch mendadak dari Indonesia ke English. Semakin tinggi level, porsi Bahasa Indonesia semakin berkurang sampai akhirnya hilang sepenuhnya di C1–C2.
 
-| Level | Bahasa Pengantar & Penjelasan | Bahasa Koreksi & Feedback | Terjemahan |
-|---|---|---|---|
-| **A1** | Indonesia dominan | Full Indonesia | Semua kalimat English disertai terjemahan Indonesia |
-| **A2** | Indonesia dominan, contoh dalam English | Indonesia | Kalimat English penting disertai terjemahan |
-| **B1** | Mix seimbang — penjelasan Indonesia, instruksi English | Indonesia + English key terms | Terjemahan hanya untuk kosakata kritis |
-| **B2** | English dominan | English, catatan Indonesia untuk poin kritis saja | Terjemahan hanya jika ada risiko miskonsepsi |
-| **C1** | Full English | Full English | Tidak ada terjemahan |
-| **C2** | Full English (gaya native speaker) | Full English — singkat, langsung, seperti native feedback | Tidak ada terjemahan |
+**Dasar Riset & Rationale:**
+
+CEFR sendiri adalah framework kompetensi (can-do statements) — CEFR tidak mengatur bahasa pengantar yang harus dipakai untuk mengajar. Kebijakan di bawah ini adalah keputusan pedagogis Inggrisin Yuk, disusun berdasarkan riset Second Language Acquisition (SLA), bukan mandat CEFR:
+
+1. **L1 (Bahasa Indonesia) sebagai scaffolding, bukan crutch permanen.** Riset code-switching menunjukkan low-proficiency learners benefit dari penggunaan L1, sedangkan high-proficiency learners lebih diuntungkan (dan lebih memilih) kelas full-English. Bahasa Indonesia mengurangi cognitive overload di level rendah, tapi pemakaian berlebihan menghambat akuisisi bahasa target — sehingga porsinya harus terus dikurangi seiring level naik, bukan dipertahankan di satu titik.
+2. **Scaffolding harus "fading," sesuai Zone of Proximal Development (Vygotsky).** Dukungan (Bahasa Indonesia) diberikan penuh di level awal, lalu dilepas bertahap seiring kompetensi user naik — bukan dilepas sekaligus. Pelepasan mendadak (full immersion sejak A1) berisiko user bingung dan churn, karena tidak ada human teacher real-time yang bisa menyesuaikan kompleksitas bahasa secara langsung seperti di kelas konvensional.
+3. **ACTFL merekomendasikan 90%+ target language**, tapi rekomendasi ini berasumsi ada guru manusia yang mengatur kompleksitas bahasa secara real-time sesuai respons murid. Inggrisin Yuk adalah produk self-paced berbasis chat AI/teks — instruksi yang terlalu English-heavy di A1 berisiko bikin user drop sebelum sempat belajar. Karena itu porsi Indonesia di level awal dibuat lebih tinggi dibanding rekomendasi kelas konvensional.
+4. **Preseden lokal (Kampung Inggris Pare)** menerapkan "English Area" 24/7 full-immersion untuk semua level sekaligus, termasuk pemula — tapi ini berhasil karena konteks asrama intensif, motivasi tinggi, dan sistem denda yang memaksa kepatuhan. Konteks ini tidak applicable untuk aplikasi self-paced berbayar: barrier bahasa yang terlalu tinggi di awal = risiko churn, bukan dorongan belajar.
+
+**Kesimpulan langsung:** B1 **belum** mengurangi Bahasa Indonesia secara signifikan — Indonesia masih dominan di B1, hanya mulai diselingi lebih banyak istilah/instruksi grammar dalam English (sesuai yang sudah diimplementasikan di `Materi/B1/Vocab.md`). Pengurangan signifikan baru mulai di **B2**. **C1 dan C2 sudah full English** tanpa terjemahan sama sekali.
+
+| Level | Bahasa Pengantar & Penjelasan | Bahasa Koreksi & Feedback | Terjemahan | Porsi Indonesia (estimasi) |
+|---|---|---|---|---|
+| **A1** | Indonesia dominan | Full Indonesia | Semua kalimat English disertai terjemahan Indonesia | ~90% |
+| **A2** | Indonesia dominan, contoh dalam English | Indonesia | Kalimat English penting disertai terjemahan | ~75% |
+| **B1** | Indonesia tetap dominan untuk penjelasan & instruksi, tapi label/istilah grammar English mulai lebih sering dipakai (termasuk di luar koreksi) | Indonesia, istilah grammar key dalam English | Full translation tetap dipakai di 2 titik kritis: Speaking Challenge questions (user wajib paham pertanyaan sebelum bisa jawab) & "Paragraf Diperkaya"/exemplar text (model B1 yang sengaja di-scaffold). Di luar 2 titik itu, tidak ada translation otomatis kalimat-per-kalimat | ~60% |
+| **B2** | English mulai dominan | English, catatan Indonesia hanya untuk poin yang berisiko miskonsepsi | Terjemahan hanya jika ada risiko miskonsepsi | ~25% |
+| **C1** | Full English | Full English | Tidak ada terjemahan | ~5% (opsional, istilah sangat teknis saja) |
+| **C2** | Full English (gaya native speaker) | Full English — singkat, langsung, seperti native feedback | Tidak ada terjemahan | 0% |
 
 **Catatan Implementasi dalam Prompt:**
 - Level A1–A2: prompt menyertakan instruksi `"Berikan semua koreksi dan penjelasan dalam Bahasa Indonesia. Tambahkan terjemahan untuk setiap kalimat Bahasa Inggris."`
-- Level B1–B2: prompt menyertakan instruksi `"Gunakan campuran Bahasa Inggris dan Indonesia. Koreksi boleh dalam Indonesia untuk poin kritis, sisanya dalam English."`
+- Level B1: prompt menyertakan instruksi `"Semua koreksi, penjelasan, dan instruksi task dalam Bahasa Indonesia, tapi gunakan istilah grammar dalam Bahasa Inggris (contoh: 'Present Perfect', '2nd Conditional' — tidak diterjemahkan). Speaking Challenge questions dan paragraf model/contoh tetap pakai terjemahan Indonesia lengkap; bagian lain tidak perlu diterjemahkan kalimat-per-kalimat."` — sesuai implementasi di `Materi/B1/Vocab.md`
+- Level B2: prompt menyertakan instruksi `"Gunakan English sebagai bahasa utama untuk penjelasan dan koreksi. Bahasa Indonesia hanya untuk catatan singkat di poin yang berisiko bikin user salah paham."`
 - Level C1–C2: prompt menyertakan instruksi `"All corrections, feedback, and explanations must be in English only. No Indonesian translation."`
+
+*Catatan: persentase di atas adalah estimasi acuan untuk menulis prompt (bukan target yang diukur otomatis oleh sistem) — disesuaikan lagi setelah ada data feedback user riil per level.*
+
+### 5.6 Mekanisme Koreksi 8 Langkah — Konsistensi & Progresivitas per Level
+
+Audit dilakukan terhadap implementasi "Koreksi 8 Langkah" (1️⃣ Koreksi Writing, 2️⃣ Analisa BOW, 3️⃣ Analisa CEFR, 4️⃣ Perbandingan 5W+1H, 5️⃣ Transition Words/Discourse Markers, 6️⃣ Frasa Siap Pakai/Lexical Chunks, 7️⃣ Register/Formality Check, 8️⃣ Speaking Challenge) di seluruh `Materi/[Level]/Vocab.md` (A1–C2), untuk memastikan mekanismenya konsisten lintas level.
+
+**Temuan utama:** struktur 8 langkah — jumlah, urutan, dan tujuan tiap langkah — **identik di semua 6 level**, dan ini disengaja, bukan kebetulan. Kedelapan langkah berfungsi sebagai "ritual" prosedural yang user kenali sejak A1, sehingga di level manapun mekanika sesi tidak perlu dipelajari ulang. Yang berubah secara sadar antar level bukan strukturnya, melainkan **kedalaman penjelasan, bahasa, kapan vocab refresh dimulai, dan istilah/label tiap langkah** — sejalan dengan action-oriented approach CEFR Companion Volume yang menekankan scaffolding yang melepas bertahap (fading), bukan mekanisme yang berubah-ubah.
+
+**Tabel evolusi per langkah (A1 → C2):**
+
+| Langkah | A1–A2 | B1 | B2 | C1 | C2 |
+|---|---|---|---|---|---|
+| 1️⃣ Koreksi Writing | 3 kolom: Kalimat Asli \| Kalimat Benar \| **Kenapa** (kontrastif Bahasa Indonesia, mendalam maks 2 pola error) | Sama, label grammar English makin sering dipakai di kolom Kenapa | Kolom jadi **Why** (English); "Catatan:" Indonesia hanya utk maks 1-2 pola interferensi | Didahului **🔎 Self-Check Pertama** (1 pola error utama ditandai lokasi/jenisnya dulu, tanpa jawaban — tunggu respons user); lalu 2 kolom (Why digabung), full English, TANPA Catatan Indonesia | Didahului **🔎 Self-Check Pertama** juga; lalu Why **1 kalimat tajam**, gaya native-to-native |
+| 2️⃣ Analisa BOW | ✅/⚠️ + contoh. Vocab Refresh mulai **Day 6** | Sama, Vocab Refresh mulai **Day 3** | Vocab Refresh mulai **Day 2** + cek register | + cek konsistensi register formal/akademik, Refresh Day 2 | + cek nada/craft retoris, Refresh tetap Day 2 |
+| 3️⃣ Analisa CEFR | Tips naik ke level berikutnya, bahasa encouraging | Sama | Sama, dalam English | Fokus konsistensi register & kefasihan spontan (bukan akurasi struktur dasar) | Reframe total: tips **mempertahankan** Mastery (C2 = level tertinggi, tidak ada "naik level") |
+| 4️⃣ Perbandingan 5W+1H | Tabel + "Paragraf Diperkaya" — **interlinear**: tiap kalimat Inggris diikuti terjemahan Indonesia dalam kurung di baris bawahnya | Sama | Translasi **hilang** — jadi "Enriched Paragraph", full English | Sama + register formal ditekankan | Sama + wajib ada momen craft retoris, bukan sekadar struktur benar |
+| 5️⃣ Transition Words / Discourse Markers | "Transition Words" — kata dasar (first, then, but) + arti italic | "Transition Words" — kata B1 (nevertheless, whereas) + arti italic | "Transition Words" → **academic connector** (given that, notwithstanding), translasi hilang | Berganti nama jadi **"Discourse Markers"** — akademik murni (insofar as, by virtue of) | "Discourse Markers" + **percakapan native** ditambahkan (for what it's worth, if anything) |
+| 6️⃣ Frasa Siap Pakai / Lexical Chunks | **"Frasa Siap Pakai"** — 2-3 lexical chunks alami + cek apakah dipakai user; sarankan 1 chunk baru; off-script redirect (jika blank/off-topic → minta user nulis dulu) | Sama + **Collocation Check** eksplisit | **"Lexical Chunks & Collocation Check"** (English) | **"Craft & Lexical Chunks"** (English, register-aware) | Sama, satu kalimat tajam tanpa over-explanation |
+| 7️⃣ Register / Formality Check | **"Register Check"** — cek kata/frasa yang kurang cocok untuk konteks topik (terlalu kasual/terlalu kaku). Format: **Kata** → versi lebih cocok → *(kenapa)*. ✅ lewati jika sudah sesuai | Sama, format: Original → More appropriate → Why (English) | **"Register/Formality Check"** (English) — identify 1-2 frasa register mismatch | **Flag register inconsistencies** (formal/informal, nominalisation overuse). 1 kalimat tajam | **Spot register slippage** — incl. pragmatic tone mismatch & missing hedges. Native-to-native note |
+| 8️⃣ Speaking Challenge | 3 pertanyaan, retrieval practice wajib | Sama | Sama, full English | Sama | Sama, fokus ketepatan nada & timing native |
+
+**Kesimpulan audit:** mekanisme koreksi 8 langkah **konsisten secara struktural** di semua level. Pergeseran kedalaman, bahasa, dan istilah antar level bersifat sengaja dan sudah diverifikasi berulang setiap kali level baru ditambahkan (B2 → C1 → C2) — bukan inkonsistensi.
+
+**Dasar Riset (SLA/ELT):**
+
+1. **Direct vs. indirect/metalinguistic corrective feedback (Ellis, 2009 — typology of written corrective feedback).** Direct feedback (memberi jawaban benar secara langsung) paling sesuai untuk learner yang belum punya cukup sumber daya linguistik untuk self-correct — relevan untuk A1–B1, dan tetap dipertahankan di B2 (transisi). Indirect/metalinguistic feedback (menandai lokasi/jenis error tanpa langsung memberi jawaban) terbukti mendorong refleksi dan retensi jangka panjang yang lebih baik, dan riset ini secara spesifik menyarankannya untuk learner level lanjut. **Diimplementasikan di C1 & C2** lewat sub-langkah **🔎 Self-Check Pertama** (lihat detail di bawah) — ditambahkan SEBELUM tabel Koreksi Writing, bukan menggantikannya, supaya user level lanjut tetap mendapat direct feedback penuh untuk semua kalimat seperti sebelumnya, tapi juga punya satu kesempatan self-correction di awal sesi sesuai temuan Ellis. A1–B2 tetap full direct feedback tanpa Self-Check Pertama, karena riset ini menyarankan indirect feedback khusus untuk learner level lanjut yang sudah punya sumber daya linguistik untuk menebak.
+2. **Scaffolding fading & learner autonomy (CEFR Companion Volume, action-oriented approach).** CEFR Companion menekankan agency/autonomy user meningkat seiring level, dan scaffolding (penjelasan, contoh, terjemahan) harus dilepas bertahap. Implementasi kita sudah konsisten dengan prinsip ini: kedalaman "Kenapa/Why" mengecil dari penjelasan kontrastif (A1) → English label (B1–B2) → 1 kalimat tajam (C2); reframing Analisa CEFR dari "naik level" menjadi "mempertahankan Mastery" di C2 adalah penerapan langsung prinsip ini pada titik tidak ada level CEFR lagi di atasnya.
+3. **Spaced retrieval practice — interval review optimal ~10–30% dari interval retensi.** Vocab Refresh yang dimulai semakin awal seiring level (Day 6 di A1/A2 → Day 3 di B1 → Day 2 di B2/C1/C2) konsisten dengan riset ini: BOW di level lanjut (akademik, idiom, litotes) punya frekuensi kemunculan alami yang jauh lebih rendah dalam percakapan sehari-hari dibanding BOW dasar di A1 — kurva lupa (forgetting curve) untuk kosakata low-frequency lebih tajam dan butuh interupsi lebih awal. Vocab refresh tidak dimajukan lagi melewati Day 2 di C2 karena keterlibatan/elaborasi makna yang tinggi di level Mastery sudah membantu retensi tanpa jadwal pengulangan yang lebih agresif.
+
+**🔎 Self-Check Pertama — mekanisme metalinguistic feedback di C1 & C2 (diimplementasikan):** Sebelum menampilkan tabel Koreksi Writing (1️⃣) penuh, Kak Ara mengidentifikasi SATU pola error paling signifikan di tulisan user (kalau ada) dan menandai HANYA lokasi + jenis errornya, tanpa memberi jawaban langsung — contoh: *"Quick check first — sentence 3 has a subject-verb agreement slip. Want to try fixing it, or should I just show you?"* Kak Ara menunggu respons user (baik berupa percobaan perbaikan maupun permintaan jawaban langsung), BARU melanjutkan ke tabel Koreksi Writing lengkap yang tetap menampilkan direct feedback untuk SEMUA kalimat seperti biasa. Kalau tulisan user sudah ≥95% benar atau tidak ada pola error yang menonjol, sub-langkah ini dilewati dan langsung ke 1️⃣. Mekanisme ini murni ADITIF — direct feedback yang sudah ada tidak dihapus atau diganti, hanya didahului satu kesempatan self-correction. Diimplementasikan di `Materi/C1/Vocab.md` dan `Materi/C2/Vocab.md`: ATURAN BAKU Bagian E (tabel metodologi + penjelasan), "Prompt Template Dasar" umum, dan PROMPT template Day 1 & Day 2 (dengan contoh error spesifik per Day — misalnya urutan inversi untuk Inverted Conditionals/Rhetorical Fronting, preposisi setelah nominalisasi, atau pemakaian litotes yang janggal).
+
+**Bug ditemukan & diperbaiki selama audit ini:** `Materi/C2/Vocab.md` Day 2 sebelumnya tidak menyertakan callout 🔂 Vocab Refresh yang seharusnya mulai Day 2 (konsisten dengan pola B2 dan C1) — sudah diperbaiki di Langkah 2 (Analisa BOW), ATURAN BAKU bagian C, tabel metodologi Koreksi 8 Langkah, dan PROMPT template Day 2.
+
+### 5.7 Optimization Audit — Hasil & Perubahan (Juni 2026)
+
+Audit komprehensif dilakukan terhadap semua `Materi/[Level]/Vocab.md` (A1–C2) dengan fokus pada diferensiasi kompetitif, persona Kak Ara, dan keakuratan konten. Berikut ringkasan temuan dan perubahan yang diterapkan.
+
+#### A. Penambahan Langkah 7️⃣ — Frasa Siap Pakai / Lexical Chunks (Diferensiator Utama)
+
+**Latar belakang:** Kompetitor (format Kampung Inggris-style ChatGPT prompt) menggunakan struktur koreksi 6 langkah yang identik (Writing → BOW → CEFR → 5W+1H → Transition Words → Speaking). Untuk membedakan Inggrisin Yuk secara struktural, bukan hanya kualitas konten, langkah ke-7 ditambahkan ke semua 6 level.
+
+**Dasar riset:** Lewis (1993) *The Lexical Approach* — argumen bahwa bahasa tersusun dari "multi-word chunks" (lexical items), bukan kata individual + grammar rules. Nattinger & DeCarrico (1992) menunjukkan bahwa penutur asli menyimpan dan memanggil bahasa dalam unit frasa, bukan kata per kata. Corpus linguistics (British National Corpus) mendukung bahwa frekuensi kolokasi alami berbeda signifikan dari terjemahan kata-per-kata dari Bahasa Indonesia.
+
+**Implementasi per level:**
+| Level | Label Langkah 7 | Fokus |
+|---|---|---|
+| A1–A2 | Frasa Siap Pakai | 2-3 lexical chunks alami + cek apakah user sudah pakai (✅) + sarankan 1 untuk dicoba |
+| B1 | Frasa Siap Pakai & Collocation Check | + cek apakah kolokasi terasa terjemahan kata-per-kata |
+| B2 | Lexical Chunks & Collocation Check | Full English, cek register naturalness |
+| C1–C2 | Craft & Lexical Chunks | High-register chunks, 1 kalimat tajam, no over-explanation |
+
+**Embedded off-script handler:** Setiap langkah 7️⃣ menyertakan instruksi redirect: jika input user kosong/off-topic/seluruhnya Bahasa Indonesia → minta user menulis terlebih dahulu, jangan jalankan Langkah 2.
+
+#### B. Penambahan Sifat "Humble" ke Persona Kak Ara
+
+**Temuan:** Sifat "humble/rendah hati" sama sekali tidak disebutkan dalam definisi persona di semua 6 file level maupun PRD sebelum audit ini. Padahal ini merupakan pembeda penting antara coach yang efektif vs coach yang terasa menggurui.
+
+**Perubahan:** Baris "Gaya bahasa" di semua PROMPT block (A1–C2) dan Panduan Bahasa diperbarui:
+- A1–B2: `"sopan, ramah, casual, dan friendly"` → `"sopan, ramah, casual, friendly, dan humble (rendah hati — tidak menggurui, hargai usaha user)"`
+- C1: `"sopan, ramah, namun langsung dan native-like"` → `"sopan, ramah, humble (rendah hati — tidak menggurui, hargai usaha user), namun langsung dan native-like"`
+- C2: `"sopan, ramah, tapi singkat..."` → `"sopan, ramah, humble (rendah hati — tidak menggurui), tapi singkat..."`
+
+#### C. Bug Fixes Konten
+
+| Level | File | Bug | Fix |
+|---|---|---|---|
+| A2 | Day 4 Feedback | Persona violation: "kedengarannya **seru**!" | → "kedengarannya **menyenangkan**!" |
+| A2 | Day 6 Feedback | Persona violation: "belanja **seru**" | → "belanja **menarik**" |
+| A2 | Day 3 Grammar | "Although crowded, ..." label "(lebih cocok untuk B1 ke atas)" menyesatkan | → "(struktur ini tidak sesuai di A2 — always use S+V after although)" |
+| A2 | Day 6 Koreksi | "cheaper than **this** one" (demonstrative salah) | → "cheaper than **that** one" |
+| A2 | Day 9 Vocab Refresh | "recycle less plastic" (makna ambigu) | → "use less plastic overall and have less to recycle" |
+| B1 | Prompt Template | V3 irregular masuk BOW (bertentangan dengan ATURAN BAKU) | → V3 ke Grammar Pendukung, BOW hanya bentuk V1 |
+| B1 | Panduan Bahasa | "Terjemahan: Kalimat Bahasa Inggris diberi terjemahan..." (terlalu luas) | → Hanya di bagian Paragraf Diperkaya (langkah 4️⃣) |
+| B1 | Day 2 Grammar | "had di sini bukan waktu lampau" (framing membingungkan) | → "bentuk Past Simple tapi BUKAN menyatakan waktu lampau — sinyal kondisi tidak nyata" |
+| B2 | Day 1–2 | Mixed Conditional "Type 1/Type 2" (non-standard, confusing) | → Deskriptif: "Past Condition → Present Result" / "Present Condition → Past Result" |
+
+#### D. Nomor Langkah Diperbarui (6 → 7)
+
+Semua referensi "KOREKSI 6 LANGKAH" dan heading "(6 Langkah)" di semua 6 Vocab.md dan PRD_USER.md diperbarui menjadi "7 LANGKAH" / "(7 Langkah)".
+
+#### E. Penambahan Langkah 7️⃣ Register/Formality Check + Restrukturisasi ke Koreksi 8 Langkah (Juni 2026)
+
+**Latar belakang:** Setelah penambahan Langkah 7️⃣ Frasa Siap Pakai (Audit A di atas), Speaking Challenge ada di posisi 6 (sebelum Frasa). Ini tidak ideal karena Speaking Challenge adalah capstone retrieval yang idealnya menutup sesi — setelah semua analisis selesai. Penambahan Register Check sebagai langkah baru sekaligus menjadi kesempatan untuk merestrukturisasi urutan ke konfigurasi yang lebih logis.
+
+**Urutan baru (Koreksi 8 Langkah):**
+1️⃣ Koreksi Writing → 2️⃣ Analisa BOW → 3️⃣ Analisa CEFR → 4️⃣ Perbandingan 5W+1H → 5️⃣ Transition Words/Discourse Markers → **6️⃣ Frasa Siap Pakai/Lexical Chunks** → **7️⃣ Register/Formality Check** *(baru)* → **8️⃣ Speaking Challenge** *(capstone)*
+
+**Alasan struktural:**
+- Speaking Challenge (8️⃣) paling efektif sebagai penutup karena memicu retrieval dari koreksi grammar (Langkah 1) + chunk yang baru dipelajari (Langkah 6) — consolidation di akhir sesi
+- Register Check (7️⃣) hadir SEBELUM Speaking agar user sadar register yang tepat untuk topik SEBELUM berbicara
+- Frasa Siap Pakai (6️⃣) hadir tepat sebelum Register Check karena keduanya berkaitan dengan kualitas leksikal tulisan user
+
+**Implementasi Register Check per level:**
+
+| Level | Label | Format & Scope |
+|---|---|---|
+| A1–A2 | Register Check | Cek kata/frasa terlalu kasual/kaku untuk konteks topik. Format: **Kata** → versi lebih cocok → *(kenapa)*. ✅ lewati jika sesuai |
+| B1 | Register Check | Original → More appropriate → Why (English, 1 sentence). Maks 1-2 contoh. ✅ jika konsisten |
+| B2 | Register/Formality Check | Identify 1-2 phrases (formal-casual mismatch). Format: Original → More appropriate → Why (English). ✅ skip if consistent |
+| C1 | Register/Formality Check | Flag formal/informal mismatch, nominalisation overuse, domain tone mismatch. 1 crisp sentence. ✅ skip if no issues |
+| C2 | Register/Formality Check | Spot register slippage incl. pragmatic hedges & inappropriate directness. One sharp native-to-native note. ✅ skip if consistent |
+
+**Perubahan yang diterapkan (Juni 2026):**
+- Semua `Materi/[Level]/Vocab.md` (A1–C2): ATURAN BAKU Section E table diperbarui (6️⃣ Frasa ← lama 7️⃣, 7️⃣ Register baru, 8️⃣ Speaking ← lama 6️⃣); Prompt Template Dasar diperbarui; semua Day PROMPT blocks diperbarui retroaktif (A1×30, A2×30, B1×30, B2×15, C1×2, C2×2)
+- Semua referensi "(7 Langkah)" → "(8 Langkah)" dan "KOREKSI 7 LANGKAH" → "KOREKSI 8 LANGKAH" di semua 6 file
+- PRD_USER.md §5.2 step table, §5.6 evolution table, dan section titles diperbarui
+
+---
 
 ---
 
@@ -893,7 +1118,7 @@ Berdasarkan analisis terhadap inggriskuai.net sebagai referensi kompetitor langs
 | Fitur | Inggrisin Yuk | Duolingo | ELSA Speak | Ruangguru English |
 |---|---|---|---|---|
 | Bahasa Koreksi | Indonesia ✓ | Inggris | Inggris | Indonesia ✓ |
-| Tutor Personal AI | Kak Arif — panggilan custom user ✓ | Tidak ada | Tidak ada | Terbatas |
+| Tutor Personal AI | Kak Ara — panggilan custom user ✓ | Tidak ada | Tidak ada | Terbatas |
 | Koneksi ke ChatGPT | Ya ✓ | Tidak | Tidak | Tidak |
 | Materi CEFR Terstruktur | 6 Level × 30 Topik + Day 31 Test ✓ | Partial | Tidak | Ya |
 | Speaking Practice | Langsung ke ChatGPT ✓ | Terbatas | Ya | Terbatas |
@@ -969,9 +1194,9 @@ Berdasarkan analisis terhadap inggriskuai.net sebagai referensi kompetitor langs
 
 ## 11. CATATAN & KETENTUAN
 
-### 11.1 Hak Cipta
+### 11.1 Kepemilikan & Pengembangan
 
-Seluruh struktur prompt, metode belajar, dan sistem tutor AI Kak Arif dalam aplikasi ini dikembangkan oleh **Arif Romadhan — Inggrisin Yuk** dan telah didaftarkan dalam proses perlindungan Hak Kekayaan Intelektual (HAKI) sesuai peraturan yang berlaku di Indonesia.
+Seluruh struktur prompt, metode belajar, dan sistem tutor AI Kak Ara dalam aplikasi ini dikembangkan oleh **Arif Romadhan — Inggrisin Yuk**.
 
 Sistem modul adaptif ini dirancang agar tutor AI dapat menyesuaikan pertanyaan dan koreksi secara dinamis sesuai respons pengguna di setiap sesi belajar.
 

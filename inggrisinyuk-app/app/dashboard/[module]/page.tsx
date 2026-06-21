@@ -5,6 +5,74 @@ import { useRouter, useParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, BookOpen } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
 
+// ── Vocabulary A1 — ChatGPT prompt data (3 sample days) ─────────────────────
+const VOCAB_A1_DAYS = [
+  {
+    topik: "Daily Routines & Activities",
+    bow: "wake up, brush teeth, have breakfast, take a shower, get dressed, go to work, have lunch, come home, cook dinner, watch TV, read a book, go to sleep, early, late, always",
+    modeDesc: "Tulis 3–5 kalimat tentang rutinitas harianmu dari pagi sampai malam.",
+    speaking: `**What time do you wake up every morning?**\n*Jam berapa kamu bangun setiap pagi?*\n**What do you do after you wake up?**\n*Apa yang kamu lakukan setelah bangun tidur?*\n**What is your favorite part of your daily routine?**\n*Apa bagian favorit dari rutinitas harianmu?*`,
+  },
+  {
+    topik: "Family & People",
+    bow: "mother, father, brother, sister, grandmother, grandfather, husband, wife, child, friend, old, young, tall, kind, live",
+    modeDesc: "Tulis 3–5 kalimat tentang keluarga atau orang-orang di sekitarmu.",
+    speaking: `**Who is the most important person in your family?**\n*Siapa orang yang paling penting dalam keluargamu?*\n**How many brothers or sisters do you have?**\n*Berapa saudara laki-laki atau perempuan yang kamu punya?*\n**What does your mother or father do every day?**\n*Apa yang ibu atau ayahmu lakukan setiap hari?*`,
+  },
+  {
+    topik: "Food & Drinks",
+    bow: "rice, bread, egg, chicken, vegetable, fruit, water, coffee, milk, eat, drink, cook, delicious, hungry, favorite",
+    modeDesc: "Tulis 3–5 kalimat tentang makanan atau minuman favoritmu.",
+    speaking: `**What do you usually eat for breakfast?**\n*Apa yang biasanya kamu makan saat sarapan?*\n**What is your favorite food and why?**\n*Apa makanan favoritmu dan kenapa?*\n**Do you like to cook? What do you cook?**\n*Apakah kamu suka memasak? Apa yang kamu masak?*`,
+  },
+]
+
+function buildVocabPrompt(
+  day: { topik: string; bow: string; modeDesc: string; speaking: string },
+  sapaan: string,
+  panggilan: string
+): string {
+  return `Topik: ${day.topik}
+Panggil aku ${sapaan} ${panggilan}. Level: A1 Beginner.
+Kamu Kak Ara, AI Coach dari Inggrisin Yuk. Bimbing aku belajar vocab lewat writing & speaking A1.
+Gaya: santai, ramah, humble — jangan menggurui. Koreksi & penjelasan dalam Bahasa Indonesia. Emoji secukupnya. Phonetic UK setelah setiap vocab dalam / /.
+
+---
+
+LANGKAH 1 — SAPAAN + BOX OF WORDS + WRITING CHALLENGE (dalam 1 response):
+Sapa: "Halo! Aku Kak Ara dari Inggrisin Yuk 👋", langsung tampilkan BOW + Writing Challenge. Jangan tanya "mau lanjut?".
+
+BOX OF WORDS (PERSIS 15 kata ini, jangan tambah/ganti):
+${day.bow}
+Tabel bernomor 2 kolom: Kosakata + phonetic UK | Arti Indonesia.
+
+Writing Challenge (2 mode sekaligus):
+Mode Cerita: ${day.modeDesc} Min. 5 kata dari BOW. Kalimat terhubung seperti bercerita.
+Mode Kilat: Pilih 5 kata dari BOW, 1 kalimat per kata.
+Format tiap mode: (a) 1 kalimat deskripsi, (b) 1 contoh dengan kata BOW yang SAMA di kedua mode, (c) template latihan kosong.
+Jangan bocorkan langkah koreksi — fokus challenge dulu.
+
+---
+
+LANGKAH 2 — KOREKSI (otomatis setelah aku kirim tulisan):
+1. Tabel 3 kolom: Kalimat Asli | Kalimat Benar | Kenapa (max 2 pola error utama). Kalimat >=95% benar: tandai OK, Kenapa isi "-".
+2. Cek tiap kata BOW: tepat atau belum + contoh benar.
+3. Level CEFR tulisanku + yang bagus + 2 tips naik ke A2.
+4. Tabel 5W+1H tulisanku vs versi lengkap. Lalu "Paragraf Diperkaya": tiap kalimat Inggris diikuti terjemahan Indonesia di baris bawahnya.
+5. Transition Words: cek. Jika belum: saran 2-3 kata A1 (first, then, after that, dll) + contoh + arti italic.
+6. Frasa Siap Pakai: 2-3 lexical chunks penutur asli topik ini. Format: frasa -> "contoh." (arti). Cek jika tulisanku sudah pakai.
+7. Clarity Check: kalimat ambigu/janggal? Jika semua jelas: lewati.
+8. Speaking Challenge - 3 pertanyaan topik ${day.topik}:
+${day.speaking}
+Jika tulisanku kosong/di luar topik/Indonesia semua: jangan koreksi — minta tulis Inggris dulu.
+
+---
+
+LANGKAH 3 — MODE SPEAKING (trigger: voice mode + "Let's start speaking!"):
+Ulangi Speaking Challenge satu per satu. Transkrip jawaban ke Inggris. Koreksi dalam Indonesia. Feedback: kalimat lebih baik (A1) + penjelasan singkat. Verb 2/3 -> Verb 1 dalam kurung italic. Lancar -> tambah 1 pertanyaan. Macet -> contoh + drill. Pujian hanya di akhir sesi.`
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 interface User {
   phone: string
   name: string
@@ -157,7 +225,7 @@ const MODULE_DATA: Record<string, {
     bridgeFromDay: 22,
   },
   professional: {
-    name: "English For Professionals",
+    name: "Professional English",
     tagline: "Bahasa Inggris untuk dunia kerja dan karier",
     colorBg: "bg-gradient-to-br from-slate-700 to-cyan-900",
     colorBtn: "border-cyan-300 text-cyan-100 hover:bg-cyan-500",
@@ -253,6 +321,7 @@ export default function ModulePage() {
   function handleCompleteDay(day: number) {
     setCompletedSet(prev => { const next = new Set(prev); next.add(day); return next })
   }
+
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
@@ -383,6 +452,10 @@ export default function ModulePage() {
               const day = i + 1
               const isCompleted = completedSet.has(day)
               const isNext = !isCompleted && day === completedSet.size + 1
+              const vocabDayData = moduleKey === "vocabulary" && day <= VOCAB_A1_DAYS.length ? VOCAB_A1_DAYS[day - 1] : null
+              const chatGPTUrl = vocabDayData && user
+                ? `https://chatgpt.com/?prompt=${encodeURIComponent(buildVocabPrompt(vocabDayData, user.sapaan, user.panggilan))}`
+                : null
               return (
                 <div key={day}>
                   {mod.bridgeFromDay === day && (
@@ -395,61 +468,73 @@ export default function ModulePage() {
                       <div className="h-px flex-1 bg-amber-200" />
                     </div>
                   )}
-                  <div
-                    className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all ${
-                      isCompleted
-                        ? "border-transparent bg-slate-50"
-                        : isNext
-                        ? "border-border bg-white shadow-sm"
-                        : "border-border/40 bg-white hover:border-border hover:shadow-sm"
-                    }`}
-                    style={isNext ? { borderLeftColor: mod.accentColor, borderLeftWidth: "3px" } : undefined}
-                  >
-                    {/* Day badge */}
-                    <span
-                      className={`w-14 shrink-0 rounded-xl py-1 text-center text-[11px] font-bold tracking-wide ${
+                  {chatGPTUrl ? (
+                    <a
+                      href={chatGPTUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => { if (!isCompleted) handleCompleteDay(day) }}
+                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all cursor-pointer ${
                         isCompleted
-                          ? "text-slate-300"
+                          ? "border-transparent bg-slate-50 hover:bg-slate-100"
                           : isNext
-                          ? mod.colorBadge
-                          : "bg-slate-100 text-slate-500"
+                          ? "border-border bg-white shadow-sm"
+                          : "border-border/40 bg-white hover:border-border hover:shadow-sm"
                       }`}
+                      style={isNext ? { borderLeftColor: mod.accentColor, borderLeftWidth: "3px" } : undefined}
                     >
-                      DAY {day}
-                    </span>
-
-                    {/* Topic name */}
-                    <span className={`flex-1 text-sm leading-snug ${
-                      isCompleted
-                        ? "text-slate-400"
-                        : isNext
-                        ? "font-semibold text-foreground"
-                        : "font-medium text-foreground/80"
-                    }`}>
-                      {topic}
-                    </span>
-
-                    {/* Action */}
-                    {isCompleted ? (
-                      <button
-                        onClick={() => handleResetDay(day)}
-                        title="Klik untuk reset topik ini"
-                        className="group flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 transition-all hover:bg-red-100 hover:text-red-400"
-                      >
-                        <CheckCircle2 className="size-5 group-hover:hidden" />
-                        <RotateCcw className="hidden size-4 group-hover:block" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleCompleteDay(day)}
-                        className={`flex size-8 shrink-0 items-center justify-center rounded-full transition-all hover:opacity-80 ${
-                          isNext ? mod.colorArrow : "bg-slate-100 hover:bg-slate-200"
-                        }`}
-                      >
-                        <ArrowRight className={`size-4 ${isNext ? "text-white" : "text-slate-400"}`} />
-                      </button>
-                    )}
-                  </div>
+                      <span className={`w-14 shrink-0 rounded-xl py-1 text-center text-[11px] font-bold tracking-wide ${
+                        isCompleted ? "text-slate-300" : isNext ? mod.colorBadge : "bg-slate-100 text-slate-500"
+                      }`}>DAY {day}</span>
+                      <span className={`flex-1 text-sm leading-snug ${
+                        isCompleted ? "text-slate-400" : isNext ? "font-semibold text-foreground" : "font-medium text-foreground/80"
+                      }`}>{topic}</span>
+                      {isCompleted ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleResetDay(day); }}
+                          title="Klik untuk reset topik ini"
+                          className="group flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 transition-all hover:bg-red-100 hover:text-red-400 cursor-pointer"
+                        >
+                          <CheckCircle2 className="size-5 group-hover:hidden" />
+                          <RotateCcw className="hidden size-4 group-hover:block" />
+                        </span>
+                      ) : (
+                        <span className={`flex size-8 shrink-0 items-center justify-center rounded-full ${isNext ? mod.colorArrow : "bg-slate-100"}`}>
+                          <ArrowRight className={`size-4 ${isNext ? "text-white" : "text-slate-400"}`} />
+                        </span>
+                      )}
+                    </a>
+                  ) : (
+                    <div
+                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all ${
+                        isCompleted
+                          ? "border-transparent bg-slate-50"
+                          : isNext
+                          ? "border-border bg-white shadow-sm"
+                          : "border-border/40 bg-white hover:border-border hover:shadow-sm"
+                      }`}
+                      style={isNext ? { borderLeftColor: mod.accentColor, borderLeftWidth: "3px" } : undefined}
+                    >
+                      <span className={`w-14 shrink-0 rounded-xl py-1 text-center text-[11px] font-bold tracking-wide ${
+                        isCompleted ? "text-slate-300" : isNext ? mod.colorBadge : "bg-slate-100 text-slate-500"
+                      }`}>DAY {day}</span>
+                      <span className={`flex-1 text-sm leading-snug ${
+                        isCompleted ? "text-slate-400" : isNext ? "font-semibold text-foreground" : "font-medium text-foreground/80"
+                      }`}>{topic}</span>
+                      {isCompleted ? (
+                        <button onClick={() => handleResetDay(day)} title="Klik untuk reset topik ini" className="group flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 transition-all hover:bg-red-100 hover:text-red-400">
+                          <CheckCircle2 className="size-5 group-hover:hidden" />
+                          <RotateCcw className="hidden size-4 group-hover:block" />
+                        </button>
+                      ) : (
+                        <button onClick={() => handleCompleteDay(day)} className={`flex size-8 shrink-0 items-center justify-center rounded-full transition-all hover:opacity-80 ${isNext ? mod.colorArrow : "bg-slate-100 hover:bg-slate-200"}`}>
+                          <ArrowRight className={`size-4 ${isNext ? "text-white" : "text-slate-400"}`} />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )
             })}

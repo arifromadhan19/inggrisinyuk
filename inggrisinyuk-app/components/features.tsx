@@ -45,8 +45,8 @@ const features = [
   },
   {
     icon: Briefcase,
-    name: "English For Professionals",
-    description: "30 topik bahasa Inggris karier — email, presentasi, interview, negosiasi",
+    name: "Professional English",
+    description: "Email profesional, presentasi, job interview, negosiasi, dan meeting",
     iconColor: "text-cyan-700",
     iconBg: "bg-cyan-100",
   },

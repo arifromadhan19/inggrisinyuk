@@ -234,14 +234,15 @@ export default function PlacementTestPage() {
   }
 
   function handleFinish() {
-    const { level } = scorePlacement(answers)
+    const { level, correctByLevel } = scorePlacement(answers)
+    const placementTotalCorrect = Object.values(correctByLevel).reduce((a, b) => a + b, 0)
     const stored = localStorage.getItem("iy_user")
     if (stored) {
       const parsed = JSON.parse(stored)
-      const updated = { ...parsed, level, levelName: LEVEL_NAME[level], placementTestDone: true }
+      const updated = { ...parsed, level, levelName: LEVEL_NAME[level], placementTestDone: true, placementTotalCorrect }
       localStorage.setItem("iy_user", JSON.stringify(updated))
     }
-    router.replace("/dashboard")
+    router.replace("/dashboard/panduan")
   }
 
   if (step === "intro") {
@@ -275,11 +276,11 @@ export default function PlacementTestPage() {
                 </span>
                 <p className="text-sm text-foreground">Soal pilihan ganda — Grammar, Vocabulary &amp; Reading</p>
               </div>
-              <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-primary shadow-sm">
+              <div className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600 shadow-sm">
                   <Clock className="size-4" />
                 </span>
-                <p className="text-sm text-foreground">±30 menit — waktu total, bukan per soal. Santai aja!</p>
+                <p className="text-sm text-foreground"><span className="font-bold text-amber-700">±30 menit</span> — waktu total, bukan per soal. Siapkan waktu luangmu ya!</p>
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-primary shadow-sm">
@@ -297,9 +298,31 @@ export default function PlacementTestPage() {
               onClick={() => setStep("test")}
               className="mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90"
             >
-              Mulai Tes
+              Yuk, Mulai Tes
               <ArrowRight className="size-4" />
             </button>
+
+            <div className="mt-3 flex justify-center">
+              <button
+                onClick={() => {
+                  const stored = localStorage.getItem("iy_user")
+                  if (stored) {
+                    const parsed = JSON.parse(stored)
+                    localStorage.setItem("iy_user", JSON.stringify({
+                      ...parsed,
+                      dismissedPlacementTest: true,
+                      level: "A1",
+                      levelName: "Beginner",
+                    }))
+                  }
+                  router.replace("/dashboard/panduan")
+                }}
+                className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline underline-offset-4 decoration-muted-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground/50"
+              >
+                Nanti dulu — saya pilih level sendiri
+                <ArrowRight className="size-3.5" />
+              </button>
+            </div>
           </div>
         </main>
       </div>
