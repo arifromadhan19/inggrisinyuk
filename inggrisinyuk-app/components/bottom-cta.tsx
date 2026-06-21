@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 
 export function BottomCta() {
   return (
-    <section id="beli" className="bg-gradient-to-br from-blue-600 to-blue-800 px-4 py-16 sm:px-6 sm:py-24">
+    <section id="beli" className="bg-gradient-to-b from-blue-800 to-slate-900 px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
         <h2 className="text-balance text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
           Siap Upgrade Bahasa Inggrismu?
@@ -15,7 +15,7 @@ export function BottomCta() {
             render={<a href="/beli">Beli Sekarang — Rp 99.000 Selamanya</a>}
           />
         </div>
-        <p className="mt-4 text-pretty text-sm text-blue-100 sm:text-base">
+        <p className="mt-4 text-pretty text-sm text-slate-300 sm:text-base">
           Sekali bayar, akses selamanya. Semua modul, semua level.
         </p>
       </div>

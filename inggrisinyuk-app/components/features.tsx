@@ -1,4 +1,4 @@
-import { Target, BookMarked, PenLine, Mic, Ear, Drama, Star } from "lucide-react"
+import { Target, BookMarked, PenLine, Mic, Ear, Drama, Star, Briefcase } from "lucide-react"
 
 const features = [
   {
@@ -43,6 +43,13 @@ const features = [
     iconColor: "text-emerald-600",
     iconBg: "bg-emerald-100",
   },
+  {
+    icon: Briefcase,
+    name: "English For Professionals",
+    description: "30 topik bahasa Inggris karier — email, presentasi, interview, negosiasi",
+    iconColor: "text-cyan-700",
+    iconBg: "bg-cyan-100",
+  },
 ]
 
 export function Features() {
@@ -50,7 +57,7 @@ export function Features() {
     <section id="fitur" className="bg-background px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="text-balance text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          7 Fitur Unggulan
+          8 Fitur Unggulan
         </h2>
 
         <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">

@@ -34,15 +34,15 @@ export function DashboardNavbar({ sapaan, panggilan, level, levelName, avatar, o
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background shadow-sm">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/dashboard" className="flex items-center gap-2 text-lg font-bold text-primary sm:text-xl">
+        <Link href="/dashboard" className="flex shrink-0 items-center gap-2 text-lg font-bold text-primary sm:text-xl">
           <Image
             src="/Icon_header.png"
             alt="Inggrisin Yuk"
             width={28}
             height={28}
-            className="size-7 object-contain"
+            className="size-7 shrink-0 object-contain"
           />
-          Inggrisin Yuk
+          <span className="hidden sm:inline">Inggrisin Yuk</span>
         </Link>
 
         <div className="relative" ref={ref}>
@@ -65,7 +65,7 @@ export function DashboardNavbar({ sapaan, panggilan, level, levelName, avatar, o
                 {initials}
               </div>
             )}
-            <div className="hidden flex-col items-start text-left sm:flex">
+            <div className="flex flex-col items-start text-left">
               <span className="text-sm font-semibold leading-tight text-foreground">
                 {sapaan} {panggilan}
               </span>

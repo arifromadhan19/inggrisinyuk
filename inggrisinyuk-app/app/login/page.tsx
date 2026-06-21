@@ -15,7 +15,7 @@ export default function LoginPage() {
 
         <header className="mb-6 flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold tracking-tight text-primary">Inggrisin Yuk</h1>
-          <p className="text-sm text-muted-foreground">Belajar Bahasa Inggris dengan AI</p>
+          <p className="text-sm text-muted-foreground">Yuk, Belajar Bahasa Inggris dengan personal AI Coach kamu</p>
         </header>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">

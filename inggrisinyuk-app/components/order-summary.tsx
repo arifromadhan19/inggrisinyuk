@@ -4,7 +4,9 @@ const features = [
   "Placement Test untuk cari tahu levelmu",
   "5 Modul Utama (Vocabulary, Grammar, Speaking, Listening, Roleplay)",
   "6 Level CEFR per modul (A1–C2)",
-  "30 Topik + Day 31 Test per level",
+  "900 Topik (150 topik/level, 30 topik/modul)",
+  "English For Professionals — 30 topik bahasa Inggris dunia kerja",
+  "Placement Test di setiap modul & level untuk membuktikan kemajuan Bahasa Inggrismu",
   "Modul Bonus — Tool AI",
   "Akses Selamanya + semua update gratis",
 ]
