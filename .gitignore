@@ -1,6 +1,11 @@
 # Ignore .env
 .env
 
+# Sensitive credentials & recovery codes
+hostinger-recovery-codes.txt
+*-recovery-codes.txt
+*-recovery-codes*
+
 # Ignore all bytecode-compiled files
 *.pyc
 *.pyo
