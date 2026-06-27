@@ -4,17 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { BookMarked, PenLine, Mic, Ear, Drama, Star, BookOpen, ArrowRight, Briefcase } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
-
-interface User {
-  phone: string
-  name: string
-  sapaan: string
-  panggilan: string
-  level: string
-  levelName: string
-  avatar?: string
-  placementTestDone?: boolean
-}
+import type { UserDTO } from "@/lib/types"
 
 const CEFR = ["A1", "A2", "B1", "B2", "C1", "C2"]
 
@@ -114,23 +104,18 @@ function getGreetingEmoji() {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserDTO | null>(null)
 
   useEffect(() => {
-    const stored = localStorage.getItem("iy_user")
-    if (!stored) { router.replace("/login"); return }
-    const userData = JSON.parse(stored)
-    // Migration: old localStorage has panggilan="Kak" (sapaan) and name="Arif" (panggilan)
-    if (!userData.sapaan) {
-      userData.sapaan = userData.panggilan || "Kak"
-      userData.panggilan = userData.name || ""
-      localStorage.setItem("iy_user", JSON.stringify(userData))
-    }
-    setUser(userData)
+    fetch("/api/me").then(async (res) => {
+      if (!res.ok) { router.replace("/login"); return }
+      const { user } = await res.json()
+      setUser(user)
+    })
   }, [router])
 
-  function handleLogout() {
-    localStorage.removeItem("iy_user")
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" })
     router.replace("/")
   }
 
@@ -296,9 +281,6 @@ export default function DashboardPage() {
                 <div className="flex size-14 items-center justify-center rounded-2xl bg-purple-200">
                   <Star className="size-7 text-purple-600" />
                 </div>
-                <span className="rounded-full bg-amber-400 px-2.5 py-1 text-[11px] font-bold text-amber-950">
-                  BONUS
-                </span>
               </div>
               <h3 className="mt-4 text-base font-bold text-card-foreground">Latihan Bebas</h3>
               <p className="mt-1 text-xs text-muted-foreground">Akses bebas · level CEFR kamu</p>

@@ -102,7 +102,7 @@ export function CheckoutForm({
         </div>
 
         <Button type="submit" disabled={submitting} className="h-12 w-full text-base font-semibold">
-          {submitting ? "Memproses..." : "Beli Sekarang — Rp 99.900"}
+          {submitting ? "Memproses..." : "Beli Sekarang — Rp 99.000"}
         </Button>
         <p className="text-center text-xs text-muted-foreground text-pretty">
           Dengan melanjutkan, kamu setuju dengan syarat &amp; ketentuan Inggrisin Yuk

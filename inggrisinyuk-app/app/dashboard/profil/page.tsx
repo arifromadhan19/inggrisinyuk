@@ -5,18 +5,7 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Check, GraduationCap, ArrowRight } from "lucide-react"
-
-interface User {
-  phone: string
-  name: string
-  sapaan: string
-  panggilan: string
-  level: string
-  levelName: string
-  avatar?: string
-  placementTestDone?: boolean
-  placementTotalCorrect?: number
-}
+import type { UserDTO } from "@/lib/types"
 
 const ROBOT_ICONS = Array.from({ length: 12 }, (_, i) => `robot_${String(i + 1).padStart(2, "0")}.png`)
 
@@ -43,7 +32,7 @@ const overallPct     = totalTopics > 0 ? Math.round((totalCompleted / totalTopic
 
 export default function ProfilPage() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserDTO | null>(null)
 
   const [selectedAvatar, setSelectedAvatar] = useState("robot_03.png")
   const [avatarSaved, setAvatarSaved] = useState(false)
@@ -54,39 +43,45 @@ export default function ProfilPage() {
   const [infoSaved, setInfoSaved] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem("iy_user")
-    if (!stored) { router.replace("/login"); return }
-    const userData: User = JSON.parse(stored)
-    // Migration: old format has panggilan="Kak" (sapaan) and name="Arif" (panggilan)
-    if (!userData.sapaan) {
-      userData.sapaan = userData.panggilan || "Kak"
-      userData.panggilan = userData.name || ""
-      localStorage.setItem("iy_user", JSON.stringify(userData))
-    }
-    setUser(userData)
-    setSelectedAvatar(userData.avatar ?? "robot_03.png")
-    setSapaan(userData.sapaan)
-    setPanggilan(userData.panggilan)
-    setLevel(userData.level ?? "A1")
+    fetch("/api/me").then(async (res) => {
+      if (!res.ok) { router.replace("/login"); return }
+      const { user: userData } = await res.json()
+      setUser(userData)
+      setSelectedAvatar(userData.avatar ?? "robot_03.png")
+      setSapaan(userData.sapaan)
+      setPanggilan(userData.panggilan)
+      setLevel(userData.level ?? "A1")
+    })
   }, [router])
 
-  function handleSaveAvatar() {
+  async function handleSaveAvatar() {
     if (!user) return
-    const updated = { ...user, avatar: selectedAvatar }
-    localStorage.setItem("iy_user", JSON.stringify(updated))
-    setUser(updated)
-    setAvatarSaved(true)
-    setTimeout(() => setAvatarSaved(false), 2000)
+    const res = await fetch("/api/me", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatar: selectedAvatar }),
+    })
+    if (res.ok) {
+      const { user: updated } = await res.json()
+      setUser(updated)
+      setAvatarSaved(true)
+      setTimeout(() => setAvatarSaved(false), 2000)
+    }
   }
 
-  function handleSaveInfo() {
+  async function handleSaveInfo() {
     if (!user) return
-    const cefrData = CEFR_LEVELS.find((l) => l.value === level)
-    const updated = { ...user, sapaan, panggilan, level, levelName: cefrData?.label ?? user.levelName }
-    localStorage.setItem("iy_user", JSON.stringify(updated))
-    setUser(updated)
-    setInfoSaved(true)
-    setTimeout(() => setInfoSaved(false), 2000)
+    const res = await fetch("/api/me", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sapaan, panggilan, level }),
+    })
+    if (res.ok) {
+      const { user: updated } = await res.json()
+      setUser(updated)
+      setInfoSaved(true)
+      setTimeout(() => setInfoSaved(false), 2000)
+    }
   }
 
   const currentLevelLabel = CEFR_LEVELS.find((l) => l.value === level)?.label ?? ""
@@ -146,7 +141,7 @@ export default function ProfilPage() {
                       <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-[11px] font-bold text-white">
                         {user.level} — {user.levelName}
                       </span>
-                      {user.placementTotalCorrect !== undefined && (
+                      {user.placementTotalCorrect !== null && (
                         <span className="text-xs text-muted-foreground">{user.placementTotalCorrect}/40 benar</span>
                       )}
                     </div>

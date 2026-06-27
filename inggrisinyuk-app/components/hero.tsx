@@ -20,7 +20,7 @@ export function Hero() {
 
             <div className="mt-8 inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-5 py-3 text-base font-semibold text-primary">
               <Sparkles className="size-5" aria-hidden="true" />
-              Personal AI Coach — Akses Selamanya Rp 99.900
+              Personal AI Coach — Akses Selamanya Rp 99.000
             </div>
 
             <div className="mt-6">
@@ -28,7 +28,7 @@ export function Hero() {
                 size="lg"
                 nativeButton={false}
                 className="h-14 rounded-xl px-8 text-base font-semibold sm:text-lg"
-                render={<a href="/beli">Beli Sekarang — Rp 99.900</a>}
+                render={<a href="/beli">Beli Sekarang — Rp 99.000</a>}
               />
               <p className="mt-3 text-sm text-muted-foreground">
                 Tidak ada langganan bulanan. Tidak ada biaya tambahan.

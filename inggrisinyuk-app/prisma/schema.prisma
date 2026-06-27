@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                     String    @id @default(uuid())
+  waNumber               String    @unique @map("wa_number")
+  panggilan              String
+  sapaan                 String    @default("Kak")
+  email                  String?
+  level                  String    @default("A1")
+  levelName              String    @default("Beginner") @map("level_name")
+  avatar                 String?
+  isSuspended            Boolean   @default(false) @map("is_suspended")
+  isDeleted              Boolean   @default(false) @map("is_deleted")
+  deletedAt              DateTime? @map("deleted_at")
+  placementTestDone      Boolean   @default(false) @map("placement_test_done")
+  dismissedPlacementTest Boolean   @default(false) @map("dismissed_placement_test")
+  placementTotalCorrect  Int?      @map("placement_total_correct")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  lastActiveAt           DateTime? @map("last_active_at")
+
+  placementTestResults PlacementTestResult[]
+  auditLogEntries      AuditLog[]
+
+  @@map("users")
+}
+
+model PlacementTestResult {
+  id               String   @id @default(uuid())
+  userId           String   @map("user_id")
+  levelRecommended String   @map("level_recommended")
+  correctByLevel   Json     @map("correct_by_level")
+  totalCorrect     Int      @map("total_correct")
+  takenAt          DateTime @default(now()) @map("taken_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("placement_test_results")
+}
+
+model Transaction {
+  orderId   String   @id @map("order_id")
+  waNumber  String   @map("wa_number")
+  status    String   @default("success")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("transactions")
+}
+
+model Admin {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         String
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  auditLogs AuditLog[]
+
+  @@map("admins")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  adminId      String   @map("admin_id")
+  targetUserId String?  @map("target_user_id")
+  action       String
+  before       Json?
+  after        Json?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  admin      Admin @relation(fields: [adminId], references: [id])
+  targetUser User? @relation(fields: [targetUserId], references: [id])
+
+  @@map("audit_logs")
+}

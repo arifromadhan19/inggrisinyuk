@@ -4,84 +4,36 @@ import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, BookOpen } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
+import type { UserDTO } from "@/lib/types"
+import { buildVocabUrl, type VocabDayData } from "@/lib/materi/vocab-shared"
+import { buildGrammarUrl, type GrammarDayData } from "@/lib/materi/grammar-shared"
+import { VOCAB_A1_DAYS } from "@/lib/materi/vocabulary-a1"
+import { VOCAB_A2_DAYS } from "@/lib/materi/vocabulary-a2"
+import { VOCAB_B1_DAYS } from "@/lib/materi/vocabulary-b1"
+import { GRAMMAR_A1_DAYS } from "@/lib/materi/grammar-a1"
+import { GRAMMAR_A2_DAYS } from "@/lib/materi/grammar-a2"
+import { GRAMMAR_B1_DAYS } from "@/lib/materi/grammar-b1"
+import { GRAMMAR_B2_DAYS } from "@/lib/materi/grammar-b2"
+import { GRAMMAR_C1_DAYS } from "@/lib/materi/grammar-c1"
+import { GRAMMAR_C2_DAYS } from "@/lib/materi/grammar-c2"
 
-// ── Vocabulary A1 — ChatGPT prompt data (3 sample days) ─────────────────────
-const VOCAB_A1_DAYS = [
-  {
-    topik: "Daily Routines & Activities",
-    bow: "wake up, brush teeth, have breakfast, take a shower, get dressed, go to work, have lunch, come home, cook dinner, watch TV, read a book, go to sleep, early, late, always",
-    modeDesc: "Tulis 3–5 kalimat tentang rutinitas harianmu dari pagi sampai malam.",
-    speaking: `**What time do you wake up every morning?**\n*Jam berapa kamu bangun setiap pagi?*\n**What do you do after you wake up?**\n*Apa yang kamu lakukan setelah bangun tidur?*\n**What is your favorite part of your daily routine?**\n*Apa bagian favorit dari rutinitas harianmu?*`,
-  },
-  {
-    topik: "Family & People",
-    bow: "mother, father, brother, sister, grandmother, grandfather, husband, wife, child, friend, old, young, tall, kind, live",
-    modeDesc: "Tulis 3–5 kalimat tentang keluarga atau orang-orang di sekitarmu.",
-    speaking: `**Who is the most important person in your family?**\n*Siapa orang yang paling penting dalam keluargamu?*\n**How many brothers or sisters do you have?**\n*Berapa saudara laki-laki atau perempuan yang kamu punya?*\n**What does your mother or father do every day?**\n*Apa yang ibu atau ayahmu lakukan setiap hari?*`,
-  },
-  {
-    topik: "Food & Drinks",
-    bow: "rice, bread, egg, chicken, vegetable, fruit, water, coffee, milk, eat, drink, cook, delicious, hungry, favorite",
-    modeDesc: "Tulis 3–5 kalimat tentang makanan atau minuman favoritmu.",
-    speaking: `**What do you usually eat for breakfast?**\n*Apa yang biasanya kamu makan saat sarapan?*\n**What is your favorite food and why?**\n*Apa makanan favoritmu dan kenapa?*\n**Do you like to cook? What do you cook?**\n*Apakah kamu suka memasak? Apa yang kamu masak?*`,
-  },
-]
-
-function buildVocabPrompt(
-  day: { topik: string; bow: string; modeDesc: string; speaking: string },
-  sapaan: string,
-  panggilan: string
-): string {
-  return `Topik: ${day.topik}
-Panggil aku ${sapaan} ${panggilan}. Level: A1 Beginner.
-Kamu Kak Ara, AI Coach dari Inggrisin Yuk. Bimbing aku belajar vocab lewat writing & speaking A1.
-Gaya: santai, ramah, humble — jangan menggurui. Koreksi & penjelasan dalam Bahasa Indonesia. Emoji secukupnya. Phonetic UK setelah setiap vocab dalam / /.
-
----
-
-LANGKAH 1 — SAPAAN + BOX OF WORDS + WRITING CHALLENGE (dalam 1 response):
-Sapa: "Halo! Aku Kak Ara dari Inggrisin Yuk 👋", langsung tampilkan BOW + Writing Challenge. Jangan tanya "mau lanjut?".
-
-BOX OF WORDS (PERSIS 15 kata ini, jangan tambah/ganti):
-${day.bow}
-Tabel bernomor 2 kolom: Kosakata + phonetic UK | Arti Indonesia.
-
-Writing Challenge (2 mode sekaligus):
-Mode Cerita: ${day.modeDesc} Min. 5 kata dari BOW. Kalimat terhubung seperti bercerita.
-Mode Kilat: Pilih 5 kata dari BOW, 1 kalimat per kata.
-Format tiap mode: (a) 1 kalimat deskripsi, (b) 1 contoh dengan kata BOW yang SAMA di kedua mode, (c) template latihan kosong.
-Jangan bocorkan langkah koreksi — fokus challenge dulu.
-
----
-
-LANGKAH 2 — KOREKSI (otomatis setelah aku kirim tulisan):
-1. Tabel 3 kolom: Kalimat Asli | Kalimat Benar | Kenapa (max 2 pola error utama). Kalimat >=95% benar: tandai OK, Kenapa isi "-".
-2. Cek tiap kata BOW: tepat atau belum + contoh benar.
-3. Level CEFR tulisanku + yang bagus + 2 tips naik ke A2.
-4. Tabel 5W+1H tulisanku vs versi lengkap. Lalu "Paragraf Diperkaya": tiap kalimat Inggris diikuti terjemahan Indonesia di baris bawahnya.
-5. Transition Words: cek. Jika belum: saran 2-3 kata A1 (first, then, after that, dll) + contoh + arti italic.
-6. Frasa Siap Pakai: 2-3 lexical chunks penutur asli topik ini. Format: frasa -> "contoh." (arti). Cek jika tulisanku sudah pakai.
-7. Clarity Check: kalimat ambigu/janggal? Jika semua jelas: lewati.
-8. Speaking Challenge - 3 pertanyaan topik ${day.topik}:
-${day.speaking}
-Jika tulisanku kosong/di luar topik/Indonesia semua: jangan koreksi — minta tulis Inggris dulu.
-
----
-
-LANGKAH 3 — MODE SPEAKING (trigger: voice mode + "Let's start speaking!"):
-Ulangi Speaking Challenge satu per satu. Transkrip jawaban ke Inggris. Koreksi dalam Indonesia. Feedback: kalimat lebih baik (A1) + penjelasan singkat. Verb 2/3 -> Verb 1 dalam kurung italic. Lancar -> tambah 1 pertanyaan. Macet -> contoh + drill. Pujian hanya di akhir sesi.`
+// Materi Vocabulary per level CEFR — lihat architecture.md §6.3. Level tanpa
+// materi (B2+) belum punya entry di sini; topik akan tampil dari MODULE_DATA
+// tapi tanpa link aktif (vocabDayData jadi null, sama seperti modul lain yang
+// belum punya precomputed URL).
+const VOCAB_DAYS_BY_LEVEL: Partial<Record<string, VocabDayData[]>> = {
+  A1: VOCAB_A1_DAYS,
+  A2: VOCAB_A2_DAYS,
+  B1: VOCAB_B1_DAYS,
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
-interface User {
-  phone: string
-  name: string
-  sapaan: string
-  panggilan: string
-  level: string
-  levelName: string
-  avatar?: string
-  placementTestDone?: boolean
+const GRAMMAR_DAYS_BY_LEVEL: Partial<Record<string, GrammarDayData[]>> = {
+  A1: GRAMMAR_A1_DAYS,
+  A2: GRAMMAR_A2_DAYS,
+  B1: GRAMMAR_B1_DAYS,
+  B2: GRAMMAR_B2_DAYS,
+  C1: GRAMMAR_C1_DAYS,
+  C2: GRAMMAR_C2_DAYS,
 }
 
 const MODULE_DATA: Record<string, {
@@ -257,7 +209,7 @@ export default function ModulePage() {
   const params = useParams()
   const moduleKey = typeof params.module === "string" ? params.module : ""
 
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserDTO | null>(null)
   const [completedSet, setCompletedSet] = useState<Set<number>>(new Set())
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -265,9 +217,11 @@ export default function ModulePage() {
   const mod = MODULE_DATA[moduleKey]
 
   useEffect(() => {
-    const stored = localStorage.getItem("iy_user")
-    if (!stored) { router.replace("/login"); return }
-    setUser(JSON.parse(stored))
+    fetch("/api/me").then(async (res) => {
+      if (!res.ok) { router.replace("/login"); return }
+      const { user } = await res.json()
+      setUser(user)
+    })
   }, [router])
 
   useEffect(() => {
@@ -281,8 +235,8 @@ export default function ModulePage() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  function handleLogout() {
-    localStorage.removeItem("iy_user")
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" })
     router.replace("/")
   }
 
@@ -295,6 +249,13 @@ export default function ModulePage() {
   }
 
   if (!user) return null
+
+  // Materi vocab/grammar dipilih berdasarkan level CEFR user — lihat architecture.md §6.3.
+  // Level tanpa materi -> undefined, topics fallback ke MODULE_DATA statis (tanpa link aktif).
+  const vocabDaysForLevel = moduleKey === "vocabulary" ? VOCAB_DAYS_BY_LEVEL[user.level] : undefined
+  const grammarDaysForLevel = moduleKey === "grammar" ? GRAMMAR_DAYS_BY_LEVEL[user.level] : undefined
+  const daysForLevel = vocabDaysForLevel ?? grammarDaysForLevel
+  const displayTopics = daysForLevel ? daysForLevel.map((d) => d.topik) : mod.topics
 
   const progress = Math.round((completedSet.size / 30) * 100)
 
@@ -448,13 +409,16 @@ export default function ModulePage() {
         {/* Topic list */}
         <main className="bg-white sm:rounded-b-2xl sm:border sm:border-t-0 sm:border-border sm:shadow-sm">
           <div className="flex flex-col gap-2 p-3 sm:p-4">
-            {mod.topics.map((topic, i) => {
+            {displayTopics.map((topic, i) => {
               const day = i + 1
               const isCompleted = completedSet.has(day)
               const isNext = !isCompleted && day === completedSet.size + 1
-              const vocabDayData = moduleKey === "vocabulary" && day <= VOCAB_A1_DAYS.length ? VOCAB_A1_DAYS[day - 1] : null
-              const chatGPTUrl = vocabDayData && user
-                ? `https://chatgpt.com/?prompt=${encodeURIComponent(buildVocabPrompt(vocabDayData, user.sapaan, user.panggilan))}`
+              const vocabDayData = vocabDaysForLevel && day <= vocabDaysForLevel.length ? vocabDaysForLevel[day - 1] : null
+              const grammarDayData = grammarDaysForLevel && day <= grammarDaysForLevel.length ? grammarDaysForLevel[day - 1] : null
+              const chatGPTUrl = vocabDayData
+                ? buildVocabUrl(vocabDayData.urlTemplate, user.sapaan, user.panggilan)
+                : grammarDayData
+                ? buildGrammarUrl(grammarDayData.urlTemplate, user.sapaan, user.panggilan)
                 : null
               return (
                 <div key={day}>

@@ -19,7 +19,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: 'Inggrisin Yuk — Personal AI Coach Bahasa Inggris Kamu',
   description:
-    'Kenalan sama Kak Ara, Personal AI Coach Bahasa Inggris kamu. Belajar sesuai level, sesuai topik, kapan saja. Akses selamanya hanya Rp 99.900 sekali bayar.',
+    'Kenalan sama Kak Ara, Personal AI Coach Bahasa Inggris kamu. Belajar sesuai level, sesuai topik, kapan saja. Akses selamanya hanya Rp 99.000 sekali bayar.',
   generator: 'v0.app',
   icons: {
     icon: [

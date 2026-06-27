@@ -6,7 +6,6 @@ const features = [
   "900 Topik (150 topik/level, 30 topik/modul)",
   "Professional English — 30 topik bahasa Inggris dunia kerja",
   "Placement Test di setiap modul & level untuk membuktikan kemajuan Bahasa Inggrismu",
-  "Modul Bonus — Tool AI",
   "Akses Selamanya + semua update gratis",
 ]
 
@@ -32,7 +31,7 @@ export function OrderSummary() {
 
       <div className="flex items-center justify-between">
         <span className="font-medium text-card-foreground">Total</span>
-        <span className="text-2xl font-bold text-primary">Rp 99.900</span>
+        <span className="text-2xl font-bold text-primary">Rp 99.000</span>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">Sekali bayar, tidak ada biaya tambahan</p>
     </div>

@@ -12,7 +12,7 @@ export function BottomCta() {
             size="lg"
             nativeButton={false}
             className="h-14 rounded-xl bg-white px-8 text-base font-semibold text-blue-700 hover:bg-white/90 sm:text-lg"
-            render={<a href="/beli">Beli Sekarang — Rp 99.900 Selamanya</a>}
+            render={<a href="/beli">Beli Sekarang — Rp 99.000 Selamanya</a>}
           />
         </div>
         <p className="mt-4 text-pretty text-sm text-slate-300 sm:text-base">

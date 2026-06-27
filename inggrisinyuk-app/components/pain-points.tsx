@@ -56,7 +56,7 @@ export function PainPoints() {
 
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center sm:p-8">
           <p className="text-base font-semibold text-primary sm:text-lg">
-            💡 Inggrisin Yuk: Kak Ara, Personal AI Coach kamu, 100% fokus ke kamu — Rp 99.900 sekali bayar, akses selamanya.
+            💡 Inggrisin Yuk: Kak Ara, Personal AI Coach kamu, 100% fokus ke kamu — Rp 99.000 sekali bayar, akses selamanya.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
             Tidak ada giliran. Tidak ada jadwal. Mulai kapan saja, dari level mana saja.

@@ -10,7 +10,7 @@ interface DashboardNavbarProps {
   panggilan: string
   level: string
   levelName: string
-  avatar?: string
+  avatar?: string | null
   onLogout: () => void
 }
 

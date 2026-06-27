@@ -74,11 +74,8 @@ export function Features() {
             </div>
           ))}
 
-          {/* BONUS feature */}
+          {/* Latihan Bebas feature */}
           <div className="relative rounded-2xl border border-violet-200 bg-violet-50 p-5 transition-shadow hover:shadow-md sm:p-6">
-            <span className="absolute right-4 top-4 rounded-full bg-amber-400 px-2.5 py-0.5 text-xs font-bold text-amber-950">
-              BONUS
-            </span>
             <div className="flex size-12 items-center justify-center rounded-xl bg-violet-200">
               <Star className="size-6 text-violet-500" aria-hidden="true" />
             </div>
