@@ -87,8 +87,10 @@ Halaman untuk melihat dan mengelola data seluruh user terdaftar.
 
 | Filter | Pilihan |
 |---|---|
-| Cari by WA | Input nomor WA (eksak atau parsial) |
+| Cari by WA | Input nomor WA (eksak atau parsial) — hanya untuk WA user |
+| Cari by Email | Input email (eksak atau parsial) — hanya untuk Google user |
 | Cari by Nama | Input nama panggilan |
+| Filter Auth Method | Semua / WA / Google |
 | Filter Status | Aktif / Suspended |
 | Filter Level | A1, A2, B1, B2, C1, C2 |
 | Sort | Tanggal daftar terbaru, Nama A–Z |
@@ -97,20 +99,22 @@ Halaman untuk melihat dan mengelola data seluruh user terdaftar.
 
 | Kolom | Keterangan |
 |---|---|
-| No WA | Nomor WhatsApp (Customer ID) |
+| No WA / Email | Nomor WhatsApp (WA user) atau Email (Google user) — Customer ID |
+| Auth Method | WA atau Google — badge visual di tabel |
 | Nama Panggilan | Nama yang diinput user |
 | Level | Level CEFR saat ini |
 | Status | Aktif / Suspended |
 | Tanggal Daftar | Timestamp registrasi |
 | Last Active | Timestamp terakhir login atau klik topik |
 | Order ID | ID transaksi pembayaran |
-| Aksi | Lihat detail, Edit WA, Suspend |
+| Aksi | Lihat detail, Edit WA (hanya untuk WA user), Suspend |
 
 **Detail User (modal/halaman):**
 
-- Informasi dasar: WA, nama, panggilan, gender, level aktif, email (jika ada)
+- Informasi dasar: auth method badge, WA atau Email, nama, panggilan, gender, level aktif
 - Status akun, Order ID transaksi, tanggal daftar
 - Last Active: timestamp terakhir user login
+- Catatan: Google user tidak memiliki nomor WA — tombol "Edit WA" tidak ditampilkan untuk Google user
 
 **Hasil Placement Test:**
 
@@ -146,16 +150,19 @@ Halaman untuk memantau semua transaksi pembayaran QRIS.
 | Success | Pembayaran berhasil, akun aktif | Lihat detail |
 | Pending | Menunggu konfirmasi dari payment gateway | Cek manual, Konfirmasi manual |
 | Failed | Pembayaran gagal atau expired | Lihat detail |
+| Expired | Invoice 24 jam telah habis tanpa pembayaran | Lihat detail |
 
 **Tabel Transaksi:**
 
 | Kolom | Keterangan |
 |---|---|
 | Order ID | ID unik transaksi (format: INY-YYYYMMDD-XXXX) |
-| No WA | WA yang didaftarkan saat bayar |
+| Customer ID | No WA (WA user) atau Email (Google user) |
+| Auth Method | WA / Google — menunjukkan flow yang digunakan |
+| Metode Bayar | DANA / Gopay / VA BCA / VA Mandiri / VA BNI / VA BRI |
 | Jumlah | Rp 99.000 |
-| Status | Success / Pending / Failed |
-| Payment Gateway | Midtrans / Xendit |
+| Status | Success / Pending / Failed / Expired |
+| Payment Gateway | **Xendit** |
 | Waktu Transaksi | Timestamp |
 | Aksi | Lihat detail, Konfirmasi manual |
 
@@ -256,12 +263,30 @@ User kirim bukti bayar + Order ID ke CS
        ↓
 Admin cek di Transaction Management → cari Order ID
        ↓
-Jika status Pending → cek payment gateway dashboard
+Jika status Pending → cek Xendit dashboard
        ↓
-Jika terkonfirmasi di gateway tapi gagal auto-update → Konfirmasi Manual
+Jika terkonfirmasi di Xendit tapi gagal auto-update → Konfirmasi Manual
        ↓
 Akun user diaktifkan → informasikan ke user
 ```
+
+### Skenario 3: Google User — Sudah Bayar VA tapi Tidak Bisa Login
+
+```
+User Google bayar via VA → pembayaran sukses di Xendit → tapi user tidak tahu harus login ulang
+       ↓
+User lapor "sudah bayar tapi tidak bisa masuk"
+       ↓
+CS cek Transaction Management → cari Order ID → status Success, auth method Google
+       ↓
+CS cek User Management → cari by email → akun ADA (sudah dibuat oleh webhook)
+       ↓
+Instruksikan user: "Silakan klik Login dengan Google di halaman login"
+       ↓
+User login dengan Google → email ditemukan di DB → masuk Dashboard
+```
+
+Catatan: Google user tidak perlu update WA — identitasnya adalah email Google. Jika email Google berubah (edge case ekstrem), harus dibuat akun baru karena Google OAuth menggunakan `google_sub` (ID unik permanen dari Google) sebagai identifier utama.
 
 ---
 
@@ -277,20 +302,51 @@ Akun user diaktifkan → informasikan ke user
 | Database | Sama dengan database user | Read untuk monitoring, write untuk CS tools & konfirmasi manual |
 | Role & Permission | RBAC sederhana | Super Admin (full), CS (User Management + CS Tools) |
 
+### Schema Database — Perubahan dari Arsitektur Awal
+
+**Tabel `users` (update):**
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `wa_number` | TEXT, nullable | Nomor WhatsApp — wajib ada jika Google user null. Format dinormalisasi |
+| `email` | TEXT, nullable, unique | Email Google — wajib ada jika WA user null |
+| `google_sub` | TEXT, nullable, unique | Google's unique user ID — lebih stabil dari email (tidak berubah jika email ganti) |
+| CONSTRAINT | — | `CHECK (wa_number IS NOT NULL OR email IS NOT NULL)` — salah satu wajib ada |
+
+Semua user di tabel `users` adalah **user berbayar** — tidak ada field `is_paid`. Keberadaan di tabel ini adalah bukti sudah bayar.
+
+**Tabel `pending_signups` (baru):**
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `id` | UUID, PK | |
+| `email` | TEXT, not null | Email dari Google OAuth |
+| `google_sub` | TEXT, not null | Google's unique user ID |
+| `name` | TEXT | Nama dari Google profile |
+| `xendit_invoice_id` | TEXT, nullable | ID invoice Xendit yang dibuat untuk signup ini |
+| `status` | ENUM | `pending` / `paid` / `expired` |
+| `created_at` | TIMESTAMP | |
+| `expires_at` | TIMESTAMP | `created_at + 24 jam` |
+
+Catatan: `pending_signups` menggunakan soft delete — record tidak dihapus setelah expire, hanya status diubah ke `expired`. Ini memungkinkan webhook Xendit tetap memproses VA payment yang datang dalam kondisi race condition (edge case). Invoice Xendit juga di-set 24 jam — setelah 24 jam tidak ada VA payment yang bisa masuk karena Xendit sudah batalkan nomor VA-nya.
+
 ### Endpoint Admin (Tambahan dari Backend User)
 
 | Endpoint | Method | Keterangan |
 |---|---|---|
 | `/admin/auth/login` | POST | Login admin |
 | `/admin/dashboard/metrics` | GET | Metrik overview dashboard |
-| `/admin/users` | GET | List user dengan filter & pagination |
+| `/admin/users` | GET | List user dengan filter & pagination (termasuk filter auth_method: WA/Google) |
 | `/admin/users/:id` | GET | Detail user |
-| `/admin/users/:id/update-wa` | PATCH | Update nomor WA user |
+| `/admin/users/:id/wa` | PATCH | Update nomor WA user — hanya untuk WA user, tidak berlaku untuk Google user |
 | `/admin/users/:id/suspend` | PATCH | Suspend/aktifkan akun |
-| `/admin/transactions` | GET | List transaksi dengan filter |
+| `/admin/transactions` | GET | List transaksi dengan filter (termasuk filter metode bayar dan auth method) |
 | `/admin/transactions/:orderId` | GET | Detail transaksi |
 | `/admin/transactions/:orderId/confirm` | POST | Konfirmasi manual transaksi |
 | `/admin/audit-log` | GET | Log perubahan data oleh admin/CS |
+| `/api/auth/google` | GET | Inisiasi Google OAuth (user-facing, bukan admin) |
+| `/api/auth/google/callback` | GET | Google OAuth callback — cek DB, buat session atau redirect ke subscribe |
+| `/api/webhooks/xendit` | POST | Webhook dari Xendit — buat user setelah pembayaran sukses |
 
 ### Keamanan
 
@@ -329,6 +385,17 @@ Akun user diaktifkan → informasikan ke user
 - [x] Audit log untuk setiap perubahan data oleh admin/CS
 - [x] 2 role: Super Admin + CS
 
+### Ditambahkan ke Iterasi 1 (keputusan 2026-06-28)
+
+- [ ] Integrasi Xendit (payment gateway) — menggantikan QRIS/Midtrans
+- [ ] Support metode bayar: DANA, Gopay, VA BCA, VA Mandiri, VA BNI, VA BRI
+- [ ] Google OAuth login + subscription flow
+- [ ] Tabel `pending_signups` (soft delete, berlaku 24 jam)
+- [ ] Schema update `users`: tambah `email`, `google_sub`, buat `wa_number` nullable + constraint
+- [ ] User Management: filter by auth method (WA/Google), tampilkan email untuk Google user
+- [ ] Transaction Management: kolom metode bayar + auth method
+- [ ] CS Skenario 3: Google user tidak bisa login setelah VA payment
+
 ### Iterasi 2 (Future)
 
 - DAU / WAU / MAU
@@ -339,5 +406,5 @@ Akun user diaktifkan → informasikan ke user
 - Analytics lanjutan (cohort analysis, funnel)
 - Notifikasi internal (alert transaksi pending > X jam)
 - Bulk action (suspend multiple user)
-- Integrasi langsung dengan payment gateway dashboard
+- Integrasi langsung dengan Xendit dashboard
 - Admin mobile-friendly (PWA)

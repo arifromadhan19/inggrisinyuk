@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkpoint #2 — Vocabulary A1 (Contoh Referensi)</title>
+<style>
+  :root {
+    --blue-600: #2563eb;
+    --blue-50: #eff6ff;
+    --violet-50: #f5f3ff;
+    --violet-100: #ede9fe;
+    --violet-400: #a78bfa;
+    --violet-600: #7c3aed;
+    --violet-700: #6d28d9;
+    --emerald-500: #10b981;
+    --emerald-50: #ecfdf5;
+    --rose-500: #f43f5e;
+    --rose-50: #fff1f2;
+    --foreground: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f8f9fb;
+    color: var(--foreground);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 64px;
+  }
+  .page { width: 100%; max-width: 640px; }
+
+  .note {
+    background: var(--blue-50);
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #1e40af;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .note b { font-weight: 700; }
+
+  .card {
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .header {
+    background: var(--violet-50);
+    border-bottom: 1px solid var(--violet-100);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .badge-cp {
+    flex-shrink: 0;
+    background: var(--violet-400);
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    border-radius: 12px;
+    padding: 10px 0;
+    width: 64px;
+    text-align: center;
+  }
+  .header-title { font-size: 16px; font-weight: 700; color: var(--foreground); margin: 0; }
+  .header-sub { font-size: 12px; color: var(--violet-600); margin: 3px 0 0; }
+
+  .body { padding: 20px 24px; }
+
+  .instruction {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+
+  .wordbank-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .wordbank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 14px;
+    background: #fafafa;
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+  }
+  .chip {
+    border: 1px solid var(--violet-400);
+    background: #fff;
+    color: var(--violet-700);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .chip:hover { background: var(--violet-50); }
+  .chip.selected {
+    background: var(--violet-600);
+    color: #fff;
+    box-shadow: 0 0 0 3px var(--violet-100);
+  }
+  .chip.used {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: #f3f4f6;
+    border-color: var(--border);
+    color: var(--muted);
+  }
+
+  .questions { display: flex; flex-direction: column; gap: 14px; }
+  .qrow {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+    flex-wrap: wrap;
+  }
+  .qnum { font-weight: 700; color: var(--muted); flex-shrink: 0; width: 20px; }
+  .blank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 4px 10px;
+    border-bottom: 2px dashed var(--violet-400);
+    color: var(--violet-700);
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .blank:hover { background: var(--violet-50); }
+  .blank.empty { color: var(--muted); font-weight: 400; }
+  .blank.correct { border-bottom-color: var(--emerald-500); background: var(--emerald-50); color: #047857; }
+  .blank.incorrect { border-bottom-color: var(--rose-500); background: var(--rose-50); color: #be123c; }
+  .answer-hint { font-size: 11px; color: var(--rose-500); font-weight: 600; }
+
+  .actions { margin-top: 24px; display: flex; gap: 10px; }
+  button.primary {
+    flex: 1;
+    background: var(--violet-600);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 0;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button.primary:disabled { background: #d1d5db; cursor: not-allowed; }
+  button.primary:not(:disabled):hover { background: var(--violet-700); }
+  button.secondary {
+    background: #fff;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .result {
+    display: none;
+    margin-top: 20px;
+    border-radius: 16px;
+    padding: 16px 18px;
+  }
+  .result.show { display: block; }
+  .result-score {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .result-label { font-size: 12px; color: var(--muted); margin: 2px 0 12px; }
+  .breakdown { display: flex; flex-wrap: wrap; gap: 6px; }
+  .breakdown span {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .footer-note {
+    margin-top: 18px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="note">
+    <b>Ini bukan halaman production.</b> File ini adalah referensi statis untuk tim konten/dev saat hardcode komponen Checkpoint sungguhan ke <code>app/dashboard/[module]/page.tsx</code>. Soal &amp; kata di bawah memakai BOW asli dari <code>materi/a1/vocab.md</code> Day 1–10, supaya contohnya akurat — bukan placeholder acak. Detail desain lengkap: <code>materi/checkpoint_result_analysis.md</code> §6–§7.
+  </div>
+
+  <div class="card">
+    <div class="header">
+      <span class="badge-cp">CP&nbsp;#2</span>
+      <div>
+        <p class="header-title">Checkpoint #2 — Vocabulary A1</p>
+        <p class="header-sub">Review Day 6–10 · 8 soal · ±5 menit · tidak mempengaruhi Day 31</p>
+      </div>
+    </div>
+
+    <div class="body">
+      <p class="instruction">
+        Pilih kata yang paling tepat dari <b>Word Bank</b> untuk melengkapi tiap kalimat di bawah.
+        Klik 1 kata, lalu klik kolom kosong yang mau diisi. Tiap kata cuma bisa dipakai sekali.
+        (6 soal dari Day 6–10, 2 soal dari Day 1–5 — supaya kosakata lama nggak kelupaan.)
+      </p>
+
+      <div class="wordbank-label">📦 Word Bank</div>
+      <div class="wordbank" id="wordbank"></div>
+
+      <div class="questions" id="questions"></div>
+
+      <div class="actions">
+        <button class="primary" id="checkBtn" disabled>Cek Jawaban</button>
+        <button class="secondary" id="resetBtn">Coba Lagi</button>
+      </div>
+
+      <div class="result" id="result">
+        <p class="result-score" id="resultScore"></p>
+        <p class="result-label" id="resultLabel"></p>
+        <div class="breakdown" id="resultBreakdown"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Di production: jawaban dikirim ke <code>POST /api/checkpoint</code>, server <b>menghitung ulang skor dari kunci jawaban</b>
+    (bukan percaya skor dari client) sebelum disimpan ke tabel <code>checkpoint_results</code> — skor di file statis ini cuma simulasi
+    client-side untuk keperluan referensi tampilan.
+  </p>
+
+</div>
+
+<script>
+  // Soal & kunci jawaban — BOW asli materi/a1/vocab.md Day 1-10.
+  // sourceDay dipakai untuk traceability ("soal salah ini dari Day berapa") sesuai rule di checkpoint_result_analysis.md §10.
+  const QUESTIONS = [
+    { id: 1, sourceDay: 10, block: "recent", text: "My ___ hurts because I ate too much.", answer: "stomach" },
+    { id: 2, sourceDay: 10, block: "recent", text: "You ___ if you feel sick.", answer: "rest" },
+    { id: 3, sourceDay: 9,  block: "recent", text: "I feel ___ because I have a big test tomorrow.", answer: "nervous" },
+    { id: 4, sourceDay: 8,  block: "recent", text: "Our class will ___ at eight o'clock sharp.", answer: "start" },
+    { id: 5, sourceDay: 7,  block: "recent", text: "Can you help me ___ the nearest hospital?", answer: "find" },
+    { id: 6, sourceDay: 6,  block: "recent", text: "She likes to ___ music while she cooks.", answer: "listen" },
+    { id: 7, sourceDay: 3,  block: "pool",   text: "This soup is so ___ — can I have more?", answer: "delicious" },
+    { id: 8, sourceDay: 5,  block: "pool",   text: "The airport is too ___, so we will take a taxi.", answer: "far" },
+  ];
+
+  // Distractor diambil dari BOW Day 1-10 yang sama, tapi tidak dipakai sebagai jawaban — supaya word bank tidak "1:1 ketebak".
+  const DISTRACTORS = ["busy", "happy", "near", "easy"];
+
+  const ALL_WORDS = shuffle([
+    ...QUESTIONS.map(q => q.answer),
+    ...DISTRACTORS,
+  ]);
+
+  let selectedChip = null;   // word currently selected in bank
+  let filled = {};           // questionId -> word
+  let checked = false;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(seededRandom(i) * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  // Deterministic shuffle (no Math.random dependency on a fixed seed) — fine for a static reference file.
+  function seededRandom(seed) {
+    const x = Math.sin(seed * 9999 + 12.9898) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  function render() {
+    renderWordbank();
+    renderQuestions();
+    updateCheckButton();
+  }
+
+  function renderWordbank() {
+    const el = document.getElementById("wordbank");
+    el.innerHTML = "";
+    const usedWords = Object.values(filled);
+    ALL_WORDS.forEach(word => {
+      const used = usedWords.includes(word);
+      const btn = document.createElement("button");
+      btn.className = "chip" + (used ? " used" : "") + (selectedChip === word ? " selected" : "");
+      btn.textContent = word;
+      btn.disabled = used || checked;
+      btn.onclick = () => {
+        selectedChip = selectedChip === word ? null : word;
+        render();
+      };
+      el.appendChild(btn);
+    });
+  }
+
+  function renderQuestions() {
+    const el = document.getElementById("questions");
+    el.innerHTML = "";
+    QUESTIONS.forEach(q => {
+      const row = document.createElement("div");
+      row.className = "qrow";
+
+      const num = document.createElement("span");
+      num.className = "qnum";
+      num.textContent = q.id + ".";
+      row.appendChild(num);
+
+      const parts = q.text.split("___");
+      const before = document.createTextNode(parts[0]);
+      row.appendChild(before);
+
+      const blank = document.createElement("span");
+      const word = filled[q.id];
+      let cls = "blank" + (word ? "" : " empty");
+      if (checked) {
+        cls += word === q.answer ? " correct" : " incorrect";
+      }
+      blank.className = cls;
+      blank.textContent = word || "______";
+      blank.onclick = () => {
+        if (checked) return;
+        if (word) {
+          delete filled[q.id];
+        } else if (selectedChip) {
+          filled[q.id] = selectedChip;
+          selectedChip = null;
+        }
+        render();
+      };
+      row.appendChild(blank);
+
+      const after = document.createTextNode(parts[1] || "");
+      row.appendChild(after);
+
+      if (checked && word !== q.answer) {
+        const hint = document.createElement("span");
+        hint.className = "answer-hint";
+        hint.textContent = `(jawaban: ${q.answer})`;
+        row.appendChild(hint);
+      }
+
+      el.appendChild(row);
+    });
+  }
+
+  function updateCheckButton() {
+    const allFilled = QUESTIONS.every(q => filled[q.id]);
+    document.getElementById("checkBtn").disabled = !allFilled || checked;
+  }
+
+  document.getElementById("checkBtn").onclick = () => {
+    checked = true;
+    const correct = QUESTIONS.filter(q => filled[q.id] === q.answer).length;
+    const total = QUESTIONS.length;
+
+    const resultEl = document.getElementById("result");
+    resultEl.classList.add("show");
+    resultEl.style.background = correct >= total * 0.7 ? "#ecfdf5" : "#fff7ed";
+
+    document.getElementById("resultScore").textContent = `${correct}/${total}`;
+    document.getElementById("resultScore").style.color = correct >= total * 0.7 ? "#047857" : "#c2410c";
+    document.getElementById("resultLabel").textContent =
+      correct === total
+        ? "Sempurna! Kosakata Day 6-10 kamu udah solid 💪"
+        : correct >= total * 0.7
+        ? "Bagus! Beberapa kata masih perlu direview lagi."
+        : "Yuk review lagi Day yang masih bingung sebelum lanjut Day 11.";
+
+    const breakdownEl = document.getElementById("resultBreakdown");
+    breakdownEl.innerHTML = "";
+    const byDay = {};
+    QUESTIONS.forEach(q => {
+      byDay[q.sourceDay] = byDay[q.sourceDay] || { correct: 0, total: 0 };
+      byDay[q.sourceDay].total++;
+      if (filled[q.id] === q.answer) byDay[q.sourceDay].correct++;
+    });
+    Object.keys(byDay).sort((a, b) => a - b).forEach(day => {
+      const span = document.createElement("span");
+      span.textContent = `Day ${day}: ${byDay[day].correct}/${byDay[day].total}`;
+      breakdownEl.appendChild(span);
+    });
+
+    render();
+  };
+
+  document.getElementById("resetBtn").onclick = () => {
+    filled = {};
+    selectedChip = null;
+    checked = false;
+    document.getElementById("result").classList.remove("show");
+    render();
+  };
+
+  render();
+</script>
+</body>
+</html>

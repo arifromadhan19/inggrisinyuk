@@ -108,75 +108,172 @@ Halaman yang menjelaskan harga dan memproses pembayaran. Tidak ada free trial �
 |---|---|---|---|
 | **Lifetime Access** | **Rp 99.000** | **Selamanya** | Semua modul, semua level (A1–C2), semua topik (30/level/modul), semua update materi |
 
-**Alur Pembelian & Pembayaran:**
+**Dua Mode Subscription:**
 
-1. User klik "Beli Sekarang" dari homepage atau navbar
-2. Halaman subscription tampil — deskripsi akses + harga Rp 99.000
-3. User mengisi **nama panggilan** dan **nomor WhatsApp** (keduanya wajib). Email opsional
-4. Sistem generate QR Code QRIS unik
-5. User scan QR dengan aplikasi e-wallet/mobile banking
-6. Sistem menerima konfirmasi pembayaran
-7. Akun otomatis aktif — user dapat login menggunakan nomor WA yang didaftarkan
-8. Halaman konfirmasi menampilkan **Order ID** — user wajib menyimpan ini
-9. User klik **"Masuk ke Dashboard"** → diarahkan ke **Panduan Penggunaan** (bisa di-skip) → **Placement Test modal** (bisa di-skip) → Dashboard
-10. Jika nomor WA salah input, user bisa melapor ke CS via WhatsApp dengan menyertakan Order ID
+| Mode | Identifier | Keterangan |
+|---|---|---|
+| **WA Flow** | Nomor WhatsApp | Masukkan nomor WA → pilih metode bayar → bayar → akun aktif otomatis. Login selamanya via nomor WA |
+| **Google Flow** | Email Google | Login with Google → email belum ada di DB → redirect ke subscription dengan email pre-filled → bayar → akun aktif otomatis. Login selamanya via Google OAuth |
+
+Akun WA dan akun Google **selalu terpisah** — tidak ada merge. User yang daftar via WA hanya bisa login via WA, dan sebaliknya.
+
+**Desain Halaman Subscription — Dua Skenario Entry:**
+
+Halaman subscription `/subscribe` memiliki dua mode tampilan tergantung dari mana user masuk:
+
+*Skenario A — User klik "Beli Sekarang" dari homepage/navbar (belum login Google):*
+
+```
+┌─────────────────────────────────────────┐
+│  Lifetime Access — Rp 99.000            │
+│                                         │
+│  [  Daftar dengan WA  ] [  Daftar dengan Google  ]  ← tab pilihan
+│                                         │
+│  Tab WA aktif (default):                │
+│  • Input: Nama Panggilan (wajib)        │
+│  • Input: Nomor WhatsApp (wajib)        │
+│  • Pilih metode bayar:                  │
+│    [DANA] [Gopay] [VA BCA] [VA Mandiri] │
+│    [VA BNI] [VA BRI]                    │
+│  • [Bayar Sekarang]                     │
+│                                         │
+│  Tab Google (jika diklik):              │
+│  → Trigger Google OAuth dulu            │
+│  → Kembali ke halaman ini dengan        │
+│    email pre-filled (lihat Skenario B)  │
+└─────────────────────────────────────────┘
+```
+
+*Skenario B — User datang dari "Login dengan Google" tapi email belum terdaftar:*
+
+```
+┌─────────────────────────────────────────┐
+│  Lifetime Access — Rp 99.000            │
+│                                         │
+│  [  Daftar dengan Google  ]  ← tab terkunci, tidak bisa pindah ke WA
+│                                         │
+│  Email: arif@gmail.com  🔒  ← dari Google, tidak bisa diubah
+│  Input: Nama Panggilan (wajib)          │
+│  Pilih metode bayar:                    │
+│    [DANA] [Gopay] [VA BCA] [VA Mandiri] │
+│    [VA BNI] [VA BRI]                    │
+│  [Bayar Sekarang]                       │
+│                                         │
+│  (Tab WA tidak ditampilkan karena       │
+│   sudah ada pending Google signup)      │
+└─────────────────────────────────────────┘
+```
+
+**Alur Pembelian — WA Flow:**
+
+1. User klik "Beli Sekarang" atau "Subscribe dengan WA" dari homepage/navbar
+2. Halaman subscription tampil — mode WA: input **nama panggilan** (wajib) + **nomor WhatsApp** (wajib)
+3. User pilih metode pembayaran (DANA, Gopay, VA BCA, VA Mandiri, VA BNI, VA BRI)
+4. Xendit generate invoice/instruksi bayar sesuai metode yang dipilih
+5. User bayar dalam window **24 jam** — setelah 24 jam invoice expired, harus mulai ulang
+6. Xendit webhook → akun dibuat di database dengan nomor WA tersebut → user langsung bisa login
+7. Halaman konfirmasi menampilkan **Order ID** — user wajib menyimpan ini
+8. User klik **"Masuk ke Dashboard"** → Placement Test (bisa skip) → Panduan Penggunaan → Dashboard
+9. Jika nomor WA salah input → lapor ke CS dengan Order ID → CS update nomor WA di admin panel
+
+**Alur Pembelian — Google Flow:**
+
+1. User klik "Login dengan Google" di halaman login
+2. Google OAuth callback → app dapat `{ email, google_sub, nama }`
+3. Cek database: email belum terdaftar → insert ke tabel `pending_signups` (berlaku 24 jam)
+4. Redirect ke halaman subscription mode Google — email sudah ter-isi otomatis dari Google (tidak bisa diubah) + **nama panggilan** (wajib diisi)
+5. User pilih metode pembayaran
+6. Xendit generate invoice dengan metadata `{ pending_signup_id, email, google_sub }`
+7. User bayar dalam window **24 jam**
+8. Xendit webhook → akun dibuat di database dengan email + google_sub → user bisa login dengan Google
+9. Xendit redirect ke `/payment/success` → session dibuat → Placement Test (bisa skip) → Panduan Penggunaan → Dashboard
+
+**Catatan VA Payment + Google Flow:** Untuk metode VA (BCA/Mandiri/BNI/BRI), invoice berlaku 24 jam — user punya cukup waktu untuk transfer manual. Jika pembayaran VA berhasil namun `pending_signups` sudah di-mark expired (edge case race condition), webhook Xendit tetap bisa membuat akun karena metadata `{ email, google_sub }` tersimpan di invoice dan record tidak di-hard delete (soft delete) — user cukup login ulang dengan Google setelah pembayaran terkonfirmasi.
 
 **Data Mandatory saat Checkout:**
 
-| Field | Status | Default | Keterangan |
-|---|---|---|---|
-| Nama Panggilan | **Wajib** | — | Digunakan AI untuk menyapa user (contoh: "Arif") |
-| Nomor WhatsApp | **Wajib** | — | Digunakan sebagai Customer ID dan kunci login |
-| Panggilan / Gelar | Otomatis | **Kak** | Default "Kak" — bisa diubah di Edit Profil setelah login |
-| Email | Opsional | — | Tidak wajib, tidak digunakan untuk login |
+| Mode | Field | Status | Default | Keterangan |
+|---|---|---|---|---|
+| WA Flow | Nama Panggilan | **Wajib** | — | Digunakan AI untuk menyapa user |
+| WA Flow | Nomor WhatsApp | **Wajib** | — | Kunci login selamanya |
+| WA Flow | Panggilan / Gelar | Otomatis | **Kak** | Bisa diubah di Edit Profil |
+| Google Flow | Nama Panggilan | **Wajib** | — | Digunakan AI untuk menyapa user |
+| Google Flow | Email | Otomatis dari Google | — | Pre-filled, tidak bisa diubah |
+| Google Flow | Panggilan / Gelar | Otomatis | **Kak** | Bisa diubah di Edit Profil |
 
 **Spesifikasi Teknis Payment:**
 
 | Atribut | Detail |
 |---|---|
-| Metode Pembayaran | QRIS (semua e-wallet & mobile banking yang mendukung QRIS) |
-| Payment Gateway | Midtrans atau Xendit |
-| QR Berlaku | 15 menit sejak dibuat |
-| Customer ID | **Nomor WhatsApp — wajib.** Email — opsional |
-| Konfirmasi | Tidak ada notifikasi otomatis — user menyimpan Order ID / Invoice ID dari halaman konfirmasi |
+| Metode Pembayaran | DANA, Gopay, VA BCA, VA Mandiri, VA BNI, VA BRI |
+| Payment Gateway | **Xendit** |
+| Invoice Berlaku | **24 jam** sejak dibuat — setelah 24 jam expired, user harus mulai ulang |
+| Customer ID | Nomor WhatsApp (WA flow) atau Email Google (Google flow) |
+| Konfirmasi | Otomatis via Xendit webhook — akun aktif seketika setelah pembayaran terverifikasi |
 | Status Transaksi | Pending / Success / Failed / Expired |
 | Harga | Flat Rp 99.000, tidak ada langganan bulanan, tidak ada auto-renewal |
 
 ### 3.3 Autentikasi — Login & Registrasi
 
-Inggrisin Yuk menggunakan sistem **passwordless login** — user cukup memasukkan nomor WhatsApp yang digunakan saat pembelian. Tidak ada password, tidak ada OTP. Semudah mungkin agar tidak menjadi hambatan di awal.
+Inggrisin Yuk mendukung **dua metode login yang terpisah sepenuhnya**: Nomor WhatsApp (passwordless) dan Google OAuth. Semua user di database adalah user berbayar — tidak ada akun "free" atau trial. Registrasi hanya terjadi melalui proses pembayaran di §3.2.
 
-**Alur Registrasi (Pengguna Baru):**
+**Halaman Login — Tampilan:**
 
-1. User klik "Beli Sekarang" di homepage
-2. Diarahkan langsung ke halaman subscription/checkout
-3. Isi **nama panggilan** (wajib) + **nomor WhatsApp** (wajib) + email (opsional) → proses pembayaran QRIS
-4. Setelah pembayaran berhasil, akun otomatis terdaftar dengan data tersebut
-5. User klik "Masuk ke Dashboard" → diarahkan ke **Placement Test** (bisa skip/nanti)
-6. Setelah Placement Test (selesai atau skip) → masuk ke **Panduan Penggunaan** → klik "Paham, Lanjut" → Dashboard
-7. Level default = **A1** — jika skip Placement Test, level tetap A1. Jika selesai tes, level otomatis tersimpan sesuai hasil
-8. Panggilan default = **"Kak"** — bisa diubah di Edit Profil kapan saja
+Halaman `/login` menampilkan dua opsi dalam satu halaman, tanpa tab — Google lebih prominent di atas:
 
-**Alur Login (Pengguna Lama):**
+```
+┌─────────────────────────────────────────┐
+│           Masuk ke Inggrisin Yuk        │
+│                                         │
+│  [  G  Lanjut dengan Google  ]          │  ← tombol Google (full-width)
+│                                         │
+│  ─────────────── atau ───────────────   │  ← divider
+│                                         │
+│  Nomor WhatsApp                         │
+│  [ 08xx-xxxx-xxxx              ]        │  ← input
+│  [     Masuk dengan WA         ]        │  ← button
+│                                         │
+│  Belum punya akses?  Beli Sekarang →   │  ← link ke /subscribe
+└─────────────────────────────────────────┘
+```
 
-1. User klik "Login" di navbar
-2. Input nomor WhatsApp yang digunakan saat beli
-3. Sistem verifikasi → jika terdaftar:
-   - **Login pertama kali**: → **Placement Test** (bisa skip/nanti) → **Panduan Penggunaan** → Dashboard
-   - **Login selanjutnya**: langsung masuk ke dashboard
-4. Tidak ada password — nomor WA adalah satu-satunya kunci akses
+- Tidak ada form email/password — login WA cukup nomor saja (passwordless)
+- Tidak ada halaman registrasi terpisah — pengguna baru diarahkan ke `/subscribe`
+- "Beli Sekarang" membuka halaman subscription dengan dua tab WA/Google (lihat §3.2)
+
+**Alur Login — Nomor WhatsApp:**
+
+1. User klik "Login dengan WA" → input nomor WhatsApp
+2. Sistem cek `users.wa_number` di database
+3. Jika terdaftar:
+   - **Login pertama kali**: → Placement Test (bisa skip) → Panduan Penggunaan → Dashboard
+   - **Login selanjutnya**: langsung ke Dashboard
+4. Jika tidak terdaftar → tampil pesan: *"Nomor belum terdaftar — beli akses dulu atau hubungi CS"*
+
+**Alur Login — Google OAuth:**
+
+1. User klik "Login dengan Google" → redirect ke Google
+2. Google callback → app dapat `{ email, google_sub, nama }`
+3. Cek `users.email` di database:
+   - **Email ditemukan**: session dibuat → Dashboard (atau Panduan Penggunaan jika pertama kali)
+   - **Email tidak ditemukan**: insert ke `pending_signups` → redirect ke halaman subscription Google Flow (§3.2)
+4. Setelah subscribe → akun dibuat → login otomatis
+
+**Registrasi (Pengguna Baru):**
+
+Registrasi tidak berdiri sendiri — hanya terjadi sebagai bagian dari alur pembelian di §3.2. Setelah pembayaran berhasil:
+- Level default = **A1** — jika skip Placement Test. Jika selesai tes, level tersimpan otomatis sesuai hasil
+- Panggilan default = **"Kak"** — bisa diubah di Edit Profil kapan saja
 
 **Spesifikasi Teknis Auth:**
 
-| Atribut | Detail |
-|---|---|
-| Metode Login | Nomor WhatsApp — tanpa password, tanpa OTP |
-| Email | Opsional — diisi saat checkout jika user mau, tidak wajib |
-| Customer ID | Nomor WhatsApp yang diisi saat checkout |
-| Nama Panggilan | Diisi saat checkout (wajib) — langsung tersimpan di profil |
-| Panggilan Default | "Kak" — dapat diubah di Edit Profil |
-| Verifikasi | Cek database: nomor WA terdaftar → akses dashboard langsung |
-| Session | Tersimpan di browser (localStorage / cookie) |
+| Atribut | WA Flow | Google Flow |
+|---|---|---|
+| Metode Login | Nomor WhatsApp — tanpa password, tanpa OTP | Google OAuth 2.0 |
+| Identifier di DB | `users.wa_number` | `users.email` + `users.google_sub` |
+| Session | httpOnly cookie (JWT) | httpOnly cookie (JWT) — sama |
+| Akun tidak ditemukan | Arahkan ke subscription WA flow | Arahkan ke subscription Google flow |
+| Merge akun | Tidak ada — selalu terpisah | Tidak ada — selalu terpisah |
 
 **Persyaratan Tambahan — Akun ChatGPT:**
 
@@ -305,7 +402,7 @@ Halaman utama setelah user login. Menampilkan sapaan berbasis waktu, progress pe
 | Heading Utama | Prompt belajar | "Mau belajar apa hari ini?" |
 | Streak Counter | Hari berturut-turut belajar | "🔥 1 hari berturut-turut · Tetap semangat!". Streak bertambah jika user membuka minimal **1 topik per hari**. Tidak ada mekanisme reset otomatis di Iterasi 1 |
 | Module Cards (5 Core) | Navigasi ke modul utama | Grid 2 kolom — Vocabulary, Speaking, Grammar, Listening, Roleplay Practice. Tiap card: ikon berwarna, nama modul, deskripsi singkat, persentase progress |
-| Module Card (English For Professionals) | Navigasi ke modul profesional | Card berlabel **💼 PRO** — English For Professionals: 30 topik bahasa Inggris dunia kerja. Warna cyan, progress tracking 30 topik |
+| Module Card (English For Professionals) | Navigasi ke modul profesional | Card berlabel **💼 PRO** — English For Professionals: 30 topik/level bahasa Inggris dunia kerja, 6 level CEFR (§4.8). Warna cyan, progress tracking per level |
 | Module Card (Bonus) | Navigasi ke sesi Latihan Bebas | Card berlabel "⭐ BONUS" — Latihan Bebas: 3 sesi latihan bersama Kak Ara, disesuaikan level CEFR dan terhubung ke modul aktif |
 | Warna Ikon per Modul | Identitas visual modul | Vocabulary (biru), Speaking (oranye), Grammar (kuning), Listening (ungu), Roleplay Practice (hijau), English For Professionals (cyan), Latihan Bebas (ungu muda) |
 | Banner Download ChatGPT | Notifikasi untuk user Android/iOS | Muncul di bawah streak counter khusus untuk pengguna mobile yang belum install ChatGPT — tombol "Download ChatGPT" mengarah ke Play Store (Android) atau App Store (iOS) |
@@ -325,6 +422,7 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 | Tombol Reset | Reset progress semua topik | Ikon reset + teks "Reset" — muncul di samping counter. Reset semua Day 1–30 sekaligus |
 | Daftar Topik Harian | List Day 1–30 | Default tampil **10 topik teratas** (Day 1–10). Tombol **"Tampilkan Semua"** di bawah untuk melihat Day 1–30 lengkap |
 | Day 31 — Level Test | Level Placement Test modul | Baris terpisah di bawah daftar topik, berlabel "DAY 31 — LEVEL TEST" + tombol panah (→). Selalu tampil, tidak terpengaruh collapse/expand |
+| Checkpoint Row (Vocabulary, Grammar, English For Professionals saja) | Latihan review singkat tiap 5 hari | Disisip **langsung di antara baris Day** (mis. antara Day 5 dan Day 6), bukan banner terpisah — berlabel "Checkpoint #1/#2/#3/#4", warna berbeda dari baris Day biasa **dan** dari Day 31 (supaya tidak tertukar dengan test penentu level). Setelah dikerjakan, skor (mis. "7/8") tampil langsung di baris itu. Detail lengkap di [materi/checkpoint_result_analysis.md](materi/checkpoint_result_analysis.md) §7 |
 
 **Status Topik (Day 1–30):**
 
@@ -337,8 +435,8 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 - Topik **otomatis tertandai** (warna berubah biru pudar) saat user mengklik dan membuka topik
 - User **bisa membatalkan tandai** (uncheck) per topik jika tidak sengaja klik — klik ikon status topik → kembali ke biru penuh
 - Tombol **Reset** mereset semua topik sekaligus kembali ke biru penuh (original)
-- **Progress counter X/30** — hanya menghitung Day 1–30. Day 31 tidak dihitung dalam progress bar
-- **Tidak ada sistem lock** — semua topik Day 1–30 dan Day 31 bebas diakses kapan saja tanpa urutan wajib
+- **Progress counter X/30** — hanya menghitung Day 1–30. Day 31 dan Checkpoint tidak dihitung dalam progress bar
+- **Tidak ada sistem lock** — semua topik Day 1–30, Day 31, dan Checkpoint bebas diakses/diulang kapan saja tanpa urutan wajib dan tidak saling memblokir
 
 **Alur Lengkap Penggunaan:**
 
@@ -360,6 +458,43 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 - Konsisten belajar minimal **1 topik per hari** untuk menjaga streak — streak dihitung dari klik pertama topik di hari tersebut
 - Manfaatkan trigger khusus di sesi ChatGPT: `clue`, `Let's start speaking!`, `How to say...`, `pause`, `end`
 
+**Tombol Panduan di Halaman Sub-Fitur:**
+
+Setiap halaman sub-fitur modul memiliki tombol "Panduan" tersendiri yang membuka panduan **khusus modul tersebut** — berbeda dari Panduan Penggunaan umum (§3.4) yang hanya membahas setup ChatGPT. Panduan per-modul menjelaskan cara belajar optimal menggunakan prompt modul itu.
+
+| Komponen | Fungsi | Detail |
+|---|---|---|
+| Tombol Panduan | Buka panduan khusus modul | Tombol di header sub-fitur (samping Tombol YouTube). Navigasi ke halaman panduan modul tersebut |
+
+### 3.7.1 Halaman Panduan Per-Modul
+
+Tiap modul memiliki halaman panduan tersendiri. Halaman ini terpisah dari Panduan Penggunaan umum (§3.4) dan berisi panduan cara belajar spesifik untuk modul tersebut.
+
+**Daftar Halaman & Route:**
+
+| Modul | Route |
+|---|---|
+| Vocabulary | `/dashboard/panduan-vocab` |
+| Grammar | `/dashboard/panduan-grammar` |
+| Speaking | `/dashboard/panduan-speaking` |
+| Listening | `/dashboard/panduan-listening` |
+| Roleplay Practice | `/dashboard/panduan-roleplay` |
+| English For Professionals | `/dashboard/panduan-professional-english` |
+| Latihan Bebas | `/dashboard/panduan-latihan-bebas` |
+
+**Komponen Tiap Halaman Panduan Modul:**
+
+| Komponen | Fungsi | Detail |
+|---|---|---|
+| Tombol Kembali | Kembali ke halaman sub-fitur modul | "← Kembali" — kembali ke modul yang relevan, bukan ke dashboard |
+| Header | Judul panduan | Nama modul + konteks "cara belajar" |
+| Konten Panduan | Instruksi & tips spesifik modul | Langkah-langkah, tips optimal, trigger ChatGPT yang berlaku untuk modul tersebut |
+| Footer | Footer standar | Sama dengan footer di halaman lain (copyright + sosmed) |
+
+**Status Implementasi (per 2026-06-28):**
+
+Semua 7 halaman panduan modul sudah dibuat sebagai **stub/placeholder** — menampilkan teks "halo panduan [modul]" dan tombol kembali. Konten lengkap per-modul belum diisi.
+
 ### 3.8 Edit Profil
 
 Halaman untuk mengubah data personal user yang digunakan untuk personalisasi prompt AI. Diakses dengan klik ikon edit di user badge navbar.
@@ -378,6 +513,8 @@ Halaman untuk mengubah data personal user yang digunakan untuk personalisasi pro
 
 **Catatan:** Perubahan data profil langsung memengaruhi prompt yang di-generate saat membuka topik baru. Tidak ada field password karena login cukup menggunakan nomor WhatsApp.
 
+**Riwayat Checkpoint & Test:** Section tambahan di halaman Edit Profil (di bawah "Perjalanan CEFR", di atas form Informasi Profil) yang merangkum skor **Day 31 (Level Test)** dari semua modul dan skor **Checkpoint** dari Vocabulary/Grammar/English For Professionals, untuk level CEFR aktif user (bisa ganti level via dropdown untuk lihat riwayat level lama). Ini **beda** dari card "Placement Test Awal" yang sudah ada di atasnya (itu test 40-soal sekali waktu saat onboarding yang menentukan level CEFR awal, bukan Day 31 per modul). Klik skor mana pun langsung navigasi ke baris terkait di halaman modulnya. Detail lengkap (layout per modul, sumber data, endpoint yang dibutuhkan) di [materi/checkpoint_result_analysis.md](materi/checkpoint_result_analysis.md) §7.5.
+
 ---
 
 ## 4. CORE FEATURES — 8 MAIN FEATURES
@@ -392,12 +529,12 @@ Halaman untuk mengubah data personal user yang digunakan untuk personalisasi pro
 | 4 | **Modul Speaking** | Core Module | Latihan speaking dengan feedback langsung dari AI |
 | 5 | **Modul Listening** | Core Module | Latihan memahami monolog/cerita berbahasa Inggris |
 | 6 | **Roleplay Practice** | Core Module | Simulasi percakapan nyata dengan AI sebagai lawan bicara |
-| 7 | **English For Professionals** | Special Module | 30 topik bahasa Inggris dunia kerja — tidak terikat CEFR level, disarankan B1+ |
+| 7 | **English For Professionals** | Core Module | 30 topik/level bahasa Inggris dunia kerja, 6 level CEFR (A1–C2) — sama seperti 5 modul utama lain |
 | 8 | **Modul Bonus — Latihan Bebas** | Bonus | 3 sesi latihan bebas bersama Kak Ara — CEFR-aware & terhubung ke modul aktif |
 
 ---
 
-Setiap modul utama (Fitur 2–6) memiliki **6 level berdasarkan CEFR (A1, A2, B1, B2, C1, C2)**, dan setiap level memiliki **30 topik harian + 1 Level Placement Test (Day 31)**. Total per level: **31 item**. Setiap topik membuka ChatGPT via URL dengan prompt yang telah dikurasi dan di-encode secara otomatis oleh sistem.
+Setiap modul utama (Fitur 2–7, termasuk English For Professionals — lihat §4.8 untuk keputusan perubahan arsitektur) memiliki **6 level berdasarkan CEFR (A1, A2, B1, B2, C1, C2)**, dan setiap level memiliki **30 topik harian + 1 Level Placement Test (Day 31)**. Total per level: **31 item**. Setiap topik membuka ChatGPT via URL dengan prompt yang telah dikurasi dan di-encode secara otomatis oleh sistem.
 
 **Day 31 — Level Placement Test** adalah sesi evaluasi singkat di akhir setiap level dalam setiap modul. Tujuannya untuk mengukur sejauh mana pemahaman dan kemampuan user setelah menyelesaikan 30 topik di level tersebut, sekaligus membantu user memutuskan apakah siap naik ke level berikutnya.
 
@@ -410,12 +547,14 @@ Setiap modul utama (Fitur 2–6) memiliki **6 level berdasarkan CEFR (A1, A2, B1
 | Speaking | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
 | Listening | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
 | Roleplay Practice | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
-| English For Professionals | — (skill-based) | 30 topik flat | — | 30 |
-| **Total** | | **930 topik** | **30 test** | **960 item** |
+| English For Professionals | A1, A2, B1, B2, C1, C2 | 30/level | 1 test/level | 186 |
+| **Total** | | **1.080 topik** | **36 test** | **1.116 item** |
 
 User memilih level CEFR dari profil mereka — sub-fitur modul langsung menampilkan Day 1–31 untuk level tersebut. User bisa ganti level kapan saja via Edit Profil.
 
 **Catatan:** Meskipun ada Day 31 sebagai test evaluasi, **tidak ada sistem lock** — user tetap bebas mengakses topik di level mana pun tanpa harus menyelesaikan Day 31 terlebih dahulu.
+
+**Checkpoint Review (Day 5/10/15/20):** Selain Day 31, modul **Vocabulary**, **Grammar**, dan **English For Professionals** punya lapisan asesmen tambahan berupa latihan review singkat hardcoded (bukan via ChatGPT) yang muncul tiap kelipatan 5 hari — Day 5, 10, 15, 20. Soal bersifat cumulative dengan bobot 70% dari 5 hari terakhir + 30% dari materi sebelumnya, sumber soal dari Box of Words (Vocabulary), Grammar Point (Grammar), atau frasa kunci profesional (English For Professionals). Checkpoint **tidak menggantikan dan tidak mempengaruhi** kelulusan Day 31 — statusnya formatif/informational saja, murni untuk spaced-repetition. Speaking, Listening, dan Roleplay Practice **tidak** memiliki checkpoint karena skill yang diuji bersifat produktif/open-ended dan butuh AI live untuk dinilai. Detail desain lengkap (cadence, pembobotan, sumber soal per modul, perbedaan per level CEFR, skema data) ada di [materi/checkpoint_result_analysis.md](materi/checkpoint_result_analysis.md).
 
 ### 4.1 Level Framework — CEFR
 
@@ -498,6 +637,16 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Vocabulary di satu level. D
 | Output | **Score** (contoh: "85/100 — Great!") + rekomendasi: "Lanjut ke level berikutnya" atau "Ulangi beberapa topik di level ini" |
 | Bisa Diulang | Ya — kapan saja |
 
+**Checkpoint Review (Day 5/10/15/20 — Vocabulary):**
+
+| Komponen Checkpoint | Detail |
+|---|---|
+| Jumlah Soal | 8 soal (rekomendasi) — 6 dari 5 hari terakhir, 2 dari materi sebelumnya |
+| Format | Word bank + fill-in-the-blank (pilih kata dari Box of Words yang sudah dipelajari), hardcoded — tidak via ChatGPT |
+| Sumber Soal | Box of Words (BOW) dari hari-hari yang sudah dicover, persis 15 kata/hari |
+| Tampilan per Level | A1–A2: word bank selalu tampil, instruksi Bahasa Indonesia. B1–B2: word bank opsional disembunyikan. C1–C2: word bank disembunyikan default, instruksi Bahasa Inggris — selaras Kebijakan Bahasa Progresif §5.5 |
+| Pengaruh ke Day 31 | Tidak ada — murni review formatif, tidak menggantikan/mempengaruhi kelulusan Day 31 |
+
 ---
 
 ### 4.3 Modul 2 — Grammar
@@ -570,6 +719,16 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Grammar di satu level. Dibu
 | Output | **Score** (contoh: "78/100 — Good!") + rekomendasi: "Lanjut ke level berikutnya" atau "Ulangi beberapa topik di level ini" |
 | Bisa Diulang | Ya — kapan saja |
 
+**Checkpoint Review (Day 5/10/15/20 — Grammar):**
+
+| Komponen Checkpoint | Detail |
+|---|---|
+| Jumlah Soal | 8 soal (rekomendasi) — 6 dari 5 hari terakhir, 2 dari materi sebelumnya |
+| Format | Pilih bentuk grammar yang tepat / lengkapi struktur / identifikasi & koreksi error kalimat — hardcoded, mirror format Day 31 dalam skala lebih kecil |
+| Sumber Soal | Grammar Point per hari (bukan Box of Words — Grammar tidak punya kosakata pre-curated, contoh kalimat selama ini di-generate ChatGPT secara live sehingga tidak bisa dipakai sebagai sumber soal fixed). Kalimat soal ditulis baru oleh tim konten menguji Grammar Point yang sudah diajarkan |
+| Tampilan per Level | A1–A2: pilihan ganda sederhana, instruksi Bahasa Indonesia. B1–B2: transformasi kalimat, Bahasa Indonesia minim. C1–C2: identifikasi error + alasan, instruksi Bahasa Inggris penuh — selaras Kebijakan Bahasa Progresif §5.5 |
+| Pengaruh ke Day 31 | Tidak ada — murni review formatif, tidak menggantikan/mempengaruhi kelulusan Day 31 |
+
 ---
 
 ### 4.4 Modul 3 — Speaking
@@ -598,7 +757,7 @@ Melatih kemampuan berbicara dalam berbagai situasi nyata dengan feedback langsun
 | 7️⃣ | **Analisa Level CEFR** | Penilaian speaking secara keseluruhan + saran untuk naik level |
 | 8️⃣ | **Adaptasi Sesi** | Lancar → pertanyaan lebih kompleks. Macet → pattern drill + contoh → ulangi pertanyaan |
 
-> **Catatan Optimasi Speaking (Juni 2026):** Feedback 6 Langkah diperkaya jadi 8 Langkah berdasarkan riset speaking pedagogy. Langkah 4️⃣ **Discourse & Coherence Check** ditambahkan berdasarkan Tsunemoto & Trofimovich (2024, *Studies in SLA*) — coherence berkorelasi r=.70 dengan comprehensibility dan merupakan dimensi yang berbeda dari fluency/accuracy; EFL learner sering menghasilkan kalimat gramatikal tapi tidak runtut sebagai giliran percakapan. Langkah 6️⃣ **Pragmatic Register Check** ditambahkan berdasarkan Bardovi-Harlig & Dörnyei (1998, TESOL Quarterly EJ567536) — EFL learner Indonesia secara sistematis mengabaikan pragmatic violations karena tidak ada immersion environment; instruksi pragmatik eksplisit adalah salah satu intervensi paling berdampak untuk EFL. URL A1 worst-case: ~3.850 (sangat aman, di bawah 4.000). Detail lengkap di speaking_analysis.md §2.3 dan §4.
+> **Catatan Optimasi Speaking (Juni 2026):** Feedback 7 Langkah diperkaya jadi 8 Langkah berdasarkan riset speaking pedagogy. Langkah 4️⃣ **Discourse & Coherence Check** ditambahkan berdasarkan Tsunemoto & Trofimovich (2024, *Studies in SLA*) — coherence berkorelasi r=.70 dengan comprehensibility dan merupakan dimensi yang berbeda dari fluency/accuracy; EFL learner sering menghasilkan kalimat gramatikal tapi tidak runtut sebagai giliran percakapan. Langkah 6️⃣ **Pragmatic Register Check** ditambahkan berdasarkan Bardovi-Harlig & Dörnyei (1998, TESOL Quarterly EJ567536) — EFL learner Indonesia secara sistematis mengabaikan pragmatic violations karena tidak ada immersion environment; instruksi pragmatik eksplisit adalah salah satu intervensi paling berdampak untuk EFL. URL A1 worst-case: ~3.850 (sangat aman, di bawah 4.000). Detail lengkap di speaking_analysis.md §2.3 dan §4.
 
 **30 Topik Speaking:**
 
@@ -820,48 +979,46 @@ Saat memilih latihan, user dapat memilih sumber konten:
 
 ### 4.8 Modul Khusus — English For Professionals
 
-Modul khusus yang dirancang untuk pengguna yang ingin menguasai bahasa Inggris dalam konteks profesional dan dunia kerja. Berbeda dari 5 modul utama, modul ini tidak terikat pada level CEFR — tersedia sebagai **30 topik flat** yang fokus pada skill profesional nyata. Disarankan untuk pengguna level B1 ke atas, tetapi dapat diakses siapa saja yang ingin mulai mempersiapkan diri untuk karier berbahasa Inggris.
+> **Keputusan arsitektur (FINAL dari product owner, Juni 2026):** Modul ini **diubah** dari "30 topik flat, tidak terikat CEFR, tanpa Day 31" menjadi **level-based A1–C2 (180 topik, 30/level + Day 31 Placement Test)** — sekarang konsisten dengan 5 modul utama lain (Vocabulary, Grammar, Speaking, Listening, Roleplay). Riset kurikulum lengkap, rationale per topik, dan desain teknis lengkap ada di [materi/profesional_analysis.md](materi/profesional_analysis.md) — dokumen ini hanya menyimpan ringkasan keputusan; **profesional_analysis.md menang kalau ada detail yang berbeda**.
 
-**Mekanisme Belajar:**
-1. User pilih topik dari daftar 30 topik profesional
-2. ChatGPT terbuka dengan prompt Professional English Coach spesifik untuk topik tersebut
-3. AI tampilkan vocabulary + frasa siap pakai untuk konteks kerja tersebut
+Modul yang dirancang untuk pengguna yang ingin menguasai bahasa Inggris dalam konteks profesional dan dunia kerja — sekarang **terikat pada level CEFR** seperti modul lain: 6 level (A1–C2) × 30 topik/level + Day 31 Placement Test. 30 topik lama (dulu flat, disarankan B1+) **tidak dibuang** — dijadikan anchor untuk level **B1** (21 topik "Core Professional Skills") dan **B2** (9 topik "Advanced Professional"), lalu dilengkapi topik baru untuk A1/A2 (survival-level workplace English) dan C1/C2 (high-stakes professional/executive). Detail rationale per topik & non-overlap check ada di profesional_analysis.md §5.
+
+**Mekanisme Belajar (tidak diubah, hanya dirinci jadi Feedback 7 Langkah — lihat profesional_analysis.md §2):**
+1. User pilih topik dari daftar 30 topik di level CEFR aktifnya
+2. ChatGPT terbuka dengan prompt Professional English Coach spesifik untuk topik & level tersebut
+3. AI tampilkan **Frasa Kunci Profesional** (8–12 frasa terkurasi, terstruktur seperti BOW Vocabulary) + frasa siap pakai untuk konteks kerja tersebut
 4. Writing/Speaking Challenge berbasis situasi kerja nyata — email, meeting, presentasi, interview
-5. Koreksi & feedback spesifik untuk professional context (naturalness, formality level, register)
+5. Koreksi & feedback spesifik untuk professional context (naturalness, formality level, register — operasionalisasi lengkap jadi Feedback 7 Langkah di profesional_analysis.md §2.3)
 
-**Identitas Visual:** Ikon 💼, warna cyan, badge "PRO" di dashboard.
+**Identitas Visual:** Ikon 💼, warna cyan, badge "PRO" di dashboard — tidak berubah.
 
-**30 Topik English For Professionals:**
+**30 Topik × 6 Level (180 topik total):** lihat kurikulum lengkap per level (A1, A2, B1, B2, C1, C2) beserta rationale 1 baris per topik di [materi/profesional_analysis.md](materi/profesional_analysis.md) §5 — tidak diduplikasi di sini supaya tidak ada 2 sumber kebenaran yang bisa tidak sinkron.
 
-**📚 Day 1–21 — Core Professional Skills:**
+**Day 31 — Level Placement Test (English For Professionals):**
 
-| Day | Topik | Day | Topik |
-|---|---|---|---|
-| 1 | Introducing Yourself Professionally | 12 | Writing Meeting Minutes |
-| 2 | Writing Professional Emails | 13 | Business Phone Calls |
-| 3 | Business Meetings — Opening & Closing | 14 | Video Call Etiquette |
-| 4 | Giving a Presentation | 15 | Professional Small Talk |
-| 5 | Making & Rejecting Offers | 16 | Handling Complaints from Clients |
-| 6 | Writing a CV/Resume in English | 17 | Writing a Professional Report |
-| 7 | Job Interview — Common Questions | 18 | Project Updates & Status Reports |
-| 8 | Job Interview — Behavioral Questions | 19 | Business Networking |
-| 9 | Negotiating a Salary | 20 | Presenting Data & Statistics |
-| 10 | Giving & Receiving Feedback at Work | 21 | Asking for Clarification Professionally |
-| 11 | Leading a Team Meeting | | |
+Sesi evaluasi singkat setelah menyelesaikan 30 topik di satu level. Dibuka di ChatGPT via URL prompt khusus.
 
-> 🌉 **Advanced Professional Skills (Day 22–30):** Topik-topik berikut lebih cocok untuk pengguna level B2 ke atas — melibatkan negosiasi kompleks, cross-cultural communication, business proposals, dan advanced presentations.
+| Komponen Test | Detail |
+|---|---|
+| Format | AI sajikan **task kerja BARU** (belum pernah muncul di Day 1–30 level tersebut) — mis. "tulis email menolak permintaan klien" (B1), "siapkan opening statement rapat manajemen" (C1) → user kerjakan secara lisan/tulisan |
+| Kriteria Penilaian | 5–6 kriteria: akurasi, naturalness, **formality/register** (differentiator inti modul), kelengkapan task, frasa kunci dipakai |
+| Output | **Score** (contoh: "82/100 — Well done!") + penilaian register/naturalness + rekomendasi: "Lanjut ke level berikutnya" atau "Ulangi beberapa topik di level ini" |
+| Bisa Diulang | Ya — kapan saja |
+| Skor | Wajib disimpan ke `module_test_results` (bukan state client — sesuai CLAUDE.md §4) |
 
-**🌉 Day 22–30 — Advanced Professional:**
+Detail lengkap format task per level ada di [materi/profesional_analysis.md](materi/profesional_analysis.md) §5.8.
 
-| Day | Topik | Day | Topik |
-|---|---|---|---|
-| 22 | Delegating Tasks | 27 | Giving a Performance Review |
-| 23 | Discussing Deadlines & Priorities | 28 | Writing a Business Proposal |
-| 24 | Handling Difficult Situations at Work | 29 | Client Relationship Management |
-| 25 | Professional Social Media & LinkedIn | 30 | Advanced Business Presentations |
-| 26 | Cross-Cultural Communication | | |
+**Checkpoint Review (Day 5/10/15/20 — English For Professionals):**
 
-**Catatan:** English For Professionals tidak memiliki Level Placement Test (Day 31) — modul ini skill-based, bukan level-based. Progress tracking tetap tersedia (30 topik yang bisa ditandai selesai).
+| Komponen Checkpoint | Detail |
+|---|---|
+| Jumlah Soal | 8 soal (rekomendasi) — 6 dari 5 hari terakhir, 2 dari materi sebelumnya |
+| Format | Word bank + fill-in-the-blank, hardcoded — sama seperti Vocabulary |
+| Sumber Soal | **Frasa Kunci Profesional** per topik (8–12 frasa/Day, wajib tersimpan terstruktur sebagai array `keyPhrases: string[]` — lihat profesional_analysis.md §2.1/§6.2/§7.3, supaya tidak mengulang gap teknis BOW Vocabulary) |
+| Catatan Khusus | Karena modul ini **sekarang punya Day 31** (lihat di atas), rekomendasi lama "checkpoint Day 30 sebagai pengganti Day 31" di [materi/checkpoint_result_analysis.md](materi/checkpoint_result_analysis.md) §8.2 **sudah usang** — Day 30 cukup jadi review konsolidasi biasa seperti modul lain, Day 31 jadi placement test sungguhan |
+| Bahasa Instruksi | Sekarang **per-CEFR-level** seperti Vocabulary/Grammar (lihat profesional_analysis.md §3.1) — bukan lagi flat/campuran standar |
+
+> Detail teknis lengkap (kurikulum 180 topik, template prompt, audit URL-safety, checklist implementasi) ada di [materi/profesional_analysis.md](materi/profesional_analysis.md). Konteks checkpoint (kebutuhan data Frasa Kunci terstruktur) ada di [materi/checkpoint_result_analysis.md](materi/checkpoint_result_analysis.md) §4.3 dan §8.2.
 
 ---
 
@@ -1141,15 +1298,29 @@ Berdasarkan analisis terhadap inggriskuai.net sebagai referensi kompetitor langs
 
 ### 8.1 Journey User Baru
 
+**WA Flow:**
+
 | Fase | Titik Kontak | Aksi User | Perasaan User | Peluang |
 |---|---|---|---|---|
 | Discovery | Iklan media sosial (TikTok/IG/FB) → Landing Page | Lihat iklan, klik ke landing page | Penasaran, tertarik | Copy iklan yang menekankan harga murah + AI |
 | Landing | Landing Page khusus iklan | Baca value proposition, lihat harga Rp 99.000, langsung klik beli | Excited, ingin coba | CTA langsung bayar — tidak ada langkah ekstra |
-| Purchase | Halaman Subscription | Isi nomor WA → scan QRIS → bayar | Mudah, cepat | Proses checkout semudah mungkin, maks 3 menit |
+| Purchase | Halaman Subscription (WA mode) | Isi nomor WA + nama → pilih DANA/Gopay/VA → bayar | Mudah, cepat | Proses checkout semudah mungkin, maks 3 menit |
 | First Login | Dashboard | Input nomor WA → langsung ke dashboard | Lega, antusias | Kesan pertama dashboard yang bersih dan jelas |
 | First Use | Sub-Fitur → ChatGPT | Pilih modul, klik topik, buka ChatGPT | Kagum, seru, merasa dibantu | Wow moment di menit pertama |
 | Retention | Streak + Progress | Belajar rutin, lihat progress bertambah | Termotivasi, bangga | Streak counter + topik tertandai |
 | Advocacy | WhatsApp / Media Sosial | Share ke teman, rekomendasikan | Bangga, merasa maju | Testimoni organik → bahan iklan baru |
+
+**Google Flow:**
+
+| Fase | Titik Kontak | Aksi User | Perasaan User | Peluang |
+|---|---|---|---|---|
+| Discovery | Iklan / referral → Landing Page atau Login page | Lihat iklan, klik ke landing page | Penasaran, tertarik | CTA "Login dengan Google" yang frictionless |
+| Intent | Halaman Login | Klik "Login dengan Google" | Familiar, percaya | Google OAuth 1-tap — zero typing |
+| Redirect ke Subscribe | Subscription (Google mode) | Email sudah ter-isi otomatis, isi nama → pilih metode bayar → bayar | Seamless, tidak perlu isi banyak | Pre-filled email mengurangi friction |
+| Purchase | Payment (DANA/Gopay/VA) | Bayar | Mudah, cepat | DANA/Gopay selesai dalam menit; VA berlaku 24 jam |
+| First Login | Dashboard | Otomatis login setelah bayar | Lega, langsung bisa mulai | Tidak perlu "ingat password" — Google handle auth |
+| First Use | Sub-Fitur → ChatGPT | Pilih modul, klik topik, buka ChatGPT | Kagum, seru, merasa dibantu | Wow moment di menit pertama |
+| Retention | Streak + Progress | Belajar rutin, lihat progress bertambah | Termotivasi, bangga | Streak counter + topik tertandai |
 
 ---
 

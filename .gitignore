@@ -23,3 +23,9 @@ __pycache__/
 .idea/
 .DS_Store
 *.log
+
+# Database backups (data sensitif, jangan masuk git)
+db-backups/
+
+# Claude Code local config
+.claude/settings.json
