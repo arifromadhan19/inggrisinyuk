@@ -119,7 +119,27 @@ export default function DashboardPage() {
     router.replace("/")
   }
 
-  if (!user) return null
+  if (!user) return (
+    <div className="flex min-h-screen flex-col bg-slate-50">
+      <div className="sticky top-0 z-50 border-b border-border bg-background shadow-sm">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="h-5 w-32 animate-pulse rounded-md bg-slate-200" />
+          <div className="h-8 w-8 animate-pulse rounded-full bg-slate-200" />
+        </div>
+      </div>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mb-6 space-y-2">
+          <div className="h-4 w-40 animate-pulse rounded-md bg-slate-200" />
+          <div className="h-8 w-64 animate-pulse rounded-md bg-slate-200" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-slate-200" />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
 
   const greeting = getGreeting()
   const greetingEmoji = getGreetingEmoji()

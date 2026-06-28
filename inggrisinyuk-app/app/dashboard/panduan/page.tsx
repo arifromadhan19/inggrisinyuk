@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   Smartphone,
@@ -11,6 +11,7 @@ import {
   ArrowRight,
   MessageCircle,
   CheckCircle2,
+  ChevronLeft,
 } from "lucide-react"
 
 type Platform = "android" | "ios" | "desktop"
@@ -75,6 +76,13 @@ const STEPS: Record<Platform, { icon: any; title: string; desc: string; cta?: { 
 export default function PanduanPage() {
   const router = useRouter()
   const [platform, setPlatform] = useState<Platform>("android")
+  const [canGoBack, setCanGoBack] = useState(false)
+
+  useEffect(() => {
+    // Next.js router pushes history entries with an idx property.
+    // idx > 0 means the user navigated here from within the app.
+    setCanGoBack((window.history.state?.idx ?? 0) > 0)
+  }, [])
 
   const steps = STEPS[platform]
 
@@ -87,9 +95,20 @@ export default function PanduanPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-background shadow-sm">
         <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-4 sm:px-6">
-          <div>
-            <p className="text-sm font-semibold text-foreground">Panduan Penggunaan</p>
-            <p className="text-xs text-muted-foreground">Sebelum mulai belajar</p>
+          <div className="flex items-center gap-2">
+            {canGoBack && (
+              <button
+                onClick={() => router.back()}
+                className="flex items-center justify-center rounded-xl p-1.5 text-muted-foreground transition-colors hover:bg-slate-100 hover:text-foreground"
+                aria-label="Kembali"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+            )}
+            <div>
+              <p className="text-sm font-semibold text-foreground">Panduan Penggunaan</p>
+              <p className="text-xs text-muted-foreground">Sebelum mulai belajar</p>
+            </div>
           </div>
           {/* WA CS button */}
           <a

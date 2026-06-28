@@ -7,6 +7,7 @@ import { DashboardNavbar } from "@/components/dashboard-navbar"
 import type { UserDTO } from "@/lib/types"
 import { buildVocabUrl, type VocabDayData } from "@/lib/materi/vocab-shared"
 import { buildGrammarUrl, type GrammarDayData } from "@/lib/materi/grammar-shared"
+import { buildListeningUrl, type ListeningDayData } from "@/lib/materi/listening-shared"
 import { VOCAB_A1_DAYS } from "@/lib/materi/vocabulary-a1"
 import { VOCAB_A2_DAYS } from "@/lib/materi/vocabulary-a2"
 import { VOCAB_B1_DAYS } from "@/lib/materi/vocabulary-b1"
@@ -16,6 +17,10 @@ import { GRAMMAR_B1_DAYS } from "@/lib/materi/grammar-b1"
 import { GRAMMAR_B2_DAYS } from "@/lib/materi/grammar-b2"
 import { GRAMMAR_C1_DAYS } from "@/lib/materi/grammar-c1"
 import { GRAMMAR_C2_DAYS } from "@/lib/materi/grammar-c2"
+import { LISTENING_A1_DAYS } from "@/lib/materi/listening-a1"
+import { LISTENING_A2_DAYS } from "@/lib/materi/listening-a2"
+import { LISTENING_B1_DAYS } from "@/lib/materi/listening-b1"
+import { LISTENING_B2_DAYS } from "@/lib/materi/listening-b2"
 
 // Materi Vocabulary per level CEFR — lihat architecture.md §6.3. Level tanpa
 // materi (B2+) belum punya entry di sini; topik akan tampil dari MODULE_DATA
@@ -34,6 +39,16 @@ const GRAMMAR_DAYS_BY_LEVEL: Partial<Record<string, GrammarDayData[]>> = {
   B2: GRAMMAR_B2_DAYS,
   C1: GRAMMAR_C1_DAYS,
   C2: GRAMMAR_C2_DAYS,
+}
+
+// Materi Listening A1 — lihat materi/listening_analysis.md §6-§7. Level lain
+// belum punya entry; topik akan tampil dari MODULE_DATA tanpa link aktif,
+// sama seperti pola Vocab/Grammar di atas.
+const LISTENING_DAYS_BY_LEVEL: Partial<Record<string, ListeningDayData[]>> = {
+  A1: LISTENING_A1_DAYS,
+  A2: LISTENING_A2_DAYS,
+  B1: LISTENING_B1_DAYS,
+  B2: LISTENING_B2_DAYS,
 }
 
 const MODULE_DATA: Record<string, {
@@ -254,7 +269,8 @@ export default function ModulePage() {
   // Level tanpa materi -> undefined, topics fallback ke MODULE_DATA statis (tanpa link aktif).
   const vocabDaysForLevel = moduleKey === "vocabulary" ? VOCAB_DAYS_BY_LEVEL[user.level] : undefined
   const grammarDaysForLevel = moduleKey === "grammar" ? GRAMMAR_DAYS_BY_LEVEL[user.level] : undefined
-  const daysForLevel = vocabDaysForLevel ?? grammarDaysForLevel
+  const listeningDaysForLevel = moduleKey === "listening" ? LISTENING_DAYS_BY_LEVEL[user.level] : undefined
+  const daysForLevel = vocabDaysForLevel ?? grammarDaysForLevel ?? listeningDaysForLevel
   const displayTopics = daysForLevel ? daysForLevel.map((d) => d.topik) : mod.topics
 
   const progress = Math.round((completedSet.size / 30) * 100)
@@ -415,10 +431,13 @@ export default function ModulePage() {
               const isNext = !isCompleted && day === completedSet.size + 1
               const vocabDayData = vocabDaysForLevel && day <= vocabDaysForLevel.length ? vocabDaysForLevel[day - 1] : null
               const grammarDayData = grammarDaysForLevel && day <= grammarDaysForLevel.length ? grammarDaysForLevel[day - 1] : null
+              const listeningDayData = listeningDaysForLevel && day <= listeningDaysForLevel.length ? listeningDaysForLevel[day - 1] : null
               const chatGPTUrl = vocabDayData
                 ? buildVocabUrl(vocabDayData.urlTemplate, user.sapaan, user.panggilan)
                 : grammarDayData
                 ? buildGrammarUrl(grammarDayData.urlTemplate, user.sapaan, user.panggilan)
+                : listeningDayData
+                ? buildListeningUrl(listeningDayData.urlTemplate, user.sapaan, user.panggilan)
                 : null
               return (
                 <div key={day}>

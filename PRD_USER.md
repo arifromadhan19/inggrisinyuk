@@ -518,11 +518,15 @@ Fokus pada grammar praktis yang langsung bisa dipakai saat berbicara, bukan gram
 | # | Langkah | Output AI |
 |---|---|---|
 | 1️⃣ | **Koreksi Struktur Kalimat** | Tabel 3 kolom: Kalimat User → Kesalahan Grammar → Kalimat Benar |
-| 2️⃣ | **Analisa Penggunaan Grammar Target** | Apakah grammar yang sedang dipelajari digunakan dengan tepat? ✅ / ⚠️ + penjelasan singkat |
-| 3️⃣ | **Repeat After Me** | User wajib mengulang kalimat koreksi dengan keras sebelum lanjut ke pertanyaan berikutnya |
-| 4️⃣ | **Analisa Level CEFR** | Penilaian level grammar saat ini + saran konkret untuk naik level |
-| 5️⃣ | **Pattern Drill** *(kondisional)* | Jika user kesulitan → AI berikan latihan berulang dengan pola kalimat yang sama, baru lanjut |
-| 6️⃣ | **Contoh Kalimat Natural** | AI tampilkan 2–3 kalimat natural yang bisa langsung digunakan dalam percakapan sehari-hari |
+| 2️⃣ | **Analisa Penggunaan Grammar Target** | Apakah grammar yang sedang dipelajari digunakan dengan tepat? ✅ / ⚠️ + penjelasan singkat kontrastif Bahasa Indonesia |
+| 3️⃣ | **Repeat After Me** | User wajib mengulang kalimat koreksi sebelum lanjut (WAJIB & blocking) |
+| 4️⃣ | **Kolokasi & Chunk Alami** | 1–2 chunk natural pakai grammar target + contoh kalimat + arti. Cek apakah jawaban user sudah natural atau masih terjemahan kaku |
+| 5️⃣ | **Analisa Level CEFR** | Penilaian level grammar saat ini + saran konkret untuk naik level |
+| 6️⃣ | **Pattern Drill** *(kondisional)* | Jika user kesulitan → AI berikan latihan berulang dengan pola kalimat yang sama, baru lanjut |
+| 7️⃣ | **Transfer Challenge** | Minta user buat 1 kalimat BARU pakai grammar target di konteks berbeda — memastikan transfer ke percakapan nyata |
+| 8️⃣ | **Contoh Kalimat Natural** | AI tampilkan 2–3 kalimat natural yang bisa langsung digunakan dalam percakapan sehari-hari |
+
+> **Catatan Optimasi Grammar (Juni 2026):** Koreksi 6 Langkah diperkaya jadi 8 Langkah berdasarkan riset SLA. Langkah 4️⃣ **Kolokasi & Chunk Alami** ditambahkan berdasarkan Lyster & Ranta (1997, ERIC EJ539354) — grammar yang hanya dikoreksi tanpa dihubungkan ke chunk natural percakapan tidak ter-internalisasi; metalinguistic feedback + form-meaning-use connection jauh lebih efektif dari recast semata. Langkah 7️⃣ **Transfer Challenge** ditambahkan berdasarkan Transfer-Appropriate Processing (Lightbown 2008) — Repeat After Me dan Pattern Drill saja tidak cukup memastikan transfer ke real-world use; learner harus produksi pola di konteks baru. URL A1 worst-case: ~4.350 (di bawah batas keras 4.500). Detail lengkap di grammar_analysis.md §2.3 dan §4.
 
 **30 Topik Grammar:**
 
@@ -588,9 +592,13 @@ Melatih kemampuan berbicara dalam berbagai situasi nyata dengan feedback langsun
 | 1️⃣ | **Tabel Perbandingan** | Tabel 2 kolom: Kalimat User vs Versi Native Speaker — tampil setelah setiap jawaban |
 | 2️⃣ | **Catatan Pelafalan** | Koreksi pronunciation kata-kata yang salah + phonetic symbol UK dalam tanda / / |
 | 3️⃣ | **Analisa Kelancaran & Naturalness** | Penilaian apakah ekspresi terasa natural, terlalu kaku, atau terlalu singkat |
-| 4️⃣ | **Saran Pilihan Kata** | Rekomendasi vocab atau frasa yang lebih natural untuk konteks yang sama |
-| 5️⃣ | **Analisa Level CEFR** | Penilaian speaking secara keseluruhan + saran untuk naik level |
-| 6️⃣ | **Adaptasi Sesi** | Lancar → pertanyaan lebih kompleks. Macet → pattern drill + contoh → ulangi pertanyaan |
+| 4️⃣ | **Discourse & Coherence Check** | Apakah respons runtut sebagai giliran percakapan? Ada ide utama + pendukung? Tunjuk 1 gap koneksi ide jika ada |
+| 5️⃣ | **Saran Pilihan Kata** | Rekomendasi vocab atau frasa yang lebih natural untuk konteks yang sama |
+| 6️⃣ | **Pragmatic Register Check** | Apakah register respons sesuai konteks? Berikan 1 alternatif frasa jika terlalu formal/kasual |
+| 7️⃣ | **Analisa Level CEFR** | Penilaian speaking secara keseluruhan + saran untuk naik level |
+| 8️⃣ | **Adaptasi Sesi** | Lancar → pertanyaan lebih kompleks. Macet → pattern drill + contoh → ulangi pertanyaan |
+
+> **Catatan Optimasi Speaking (Juni 2026):** Feedback 6 Langkah diperkaya jadi 8 Langkah berdasarkan riset speaking pedagogy. Langkah 4️⃣ **Discourse & Coherence Check** ditambahkan berdasarkan Tsunemoto & Trofimovich (2024, *Studies in SLA*) — coherence berkorelasi r=.70 dengan comprehensibility dan merupakan dimensi yang berbeda dari fluency/accuracy; EFL learner sering menghasilkan kalimat gramatikal tapi tidak runtut sebagai giliran percakapan. Langkah 6️⃣ **Pragmatic Register Check** ditambahkan berdasarkan Bardovi-Harlig & Dörnyei (1998, TESOL Quarterly EJ567536) — EFL learner Indonesia secara sistematis mengabaikan pragmatic violations karena tidak ada immersion environment; instruksi pragmatik eksplisit adalah salah satu intervensi paling berdampak untuk EFL. URL A1 worst-case: ~3.850 (sangat aman, di bawah 4.000). Detail lengkap di speaking_analysis.md §2.3 dan §4.
 
 **30 Topik Speaking:**
 
@@ -699,6 +707,8 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Listening di satu level. Di
 | Fokus | Seberapa baik user memahami isi, maksud, dan kosakata dari monolog |
 | Output | **Score** (contoh: "80/100 — Well done!") + penilaian tingkat comprehension + rekomendasi naik level atau latihan ulang |
 | Bisa Diulang | Ya — kapan saja |
+
+> **Catatan Optimasi Listening (Juni 2026):** Feedback 5 Langkah di atas diperkaya berdasarkan riset listening pedagogy (Goh 2000 — ERIC EJ601557; Field; Vandergrift & Goh; connected speech intervention — eajournals.org) tanpa mengubah nama/jumlah langkah. Langkah 2️⃣ kini menyertakan **tag 3 Tipe Miss** (Miss Dengar=Perception/gagal decode bunyi; Miss Rangkai=Parsing/gagal rangkai makna; Miss Makna=Utilization/gagal inferensi — Anderson 1995 + Goh 2000); Langkah 3️⃣ Day 2+ menjalankan **Vocab Refresh** (1 kosakata dari sesi sebelumnya); Langkah 4️⃣ menyertakan rekap tipe miss dominan sesi; Langkah 5️⃣ memilih **strategi sesuai tipe miss dominan** (Miss Dengar→connected speech/dictation; Miss Rangkai→chunking/replay; Miss Makna→prediksi+inferensi top-down). Detail implementasi di [listening_analysis.md](../materi/listening_analysis.md) §2.3, §3.2, §6.1, §7.2.
 
 ---
 
