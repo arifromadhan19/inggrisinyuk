@@ -4,12 +4,12 @@ const steps = [
   {
     icon: CreditCard,
     title: "Beli Akses",
-    description: "Bayar QRIS Rp 99.000, akun langsung aktif",
+    description: "Daftar & bayar online Rp 99.000, akun langsung aktif",
   },
   {
     icon: KeyRound,
     title: "Login",
-    description: "Masuk dengan nomor WhatsApp, tanpa password",
+    description: "Masuk dengan WhatsApp atau Google, tanpa password",
   },
   {
     icon: BookOpen,

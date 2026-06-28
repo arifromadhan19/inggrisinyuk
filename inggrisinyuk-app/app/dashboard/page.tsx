@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { BookMarked, PenLine, Mic, Ear, Drama, Star, BookOpen, ArrowRight, Briefcase } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
 import type { UserDTO } from "@/lib/types"
@@ -239,13 +240,13 @@ export default function DashboardPage() {
         {/* Semua Modul + Latihan Bebas — card besar */}
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-base font-bold text-foreground">Pilih Modul Latihan</h3>
-          <a
-            href="/dashboard/panduan"
+          <Link
+            href="/dashboard/panduan-penggunaan?back=1"
             className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
           >
             <BookOpen className="size-3.5" />
             Panduan
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {modules.map((mod) => {
@@ -375,8 +376,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Bantuan — entry point Panduan */}
-        <a
-          href="/dashboard/panduan"
+        <Link
+          href="/dashboard/panduan-penggunaan?back=1"
           className="group mt-6 flex items-center justify-between gap-4 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-6 py-5 shadow-md transition-all hover:shadow-lg hover:brightness-105"
         >
           <div>
@@ -393,7 +394,7 @@ export default function DashboardPage() {
           <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/20 transition-transform group-hover:translate-x-1">
             <BookOpen className="size-5 text-white" />
           </div>
-        </a>
+        </Link>
       </main>
 
       <footer className="border-t border-border px-4 py-4 sm:px-6">

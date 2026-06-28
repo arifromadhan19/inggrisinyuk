@@ -14,7 +14,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
   if (!user) notFound()
 
   const transaction = await db.transaction.findFirst({
-    where: { waNumber: user.waNumber },
+    where: user.waNumber ? { OR: [{ userId: user.id }, { waNumber: user.waNumber }] } : { userId: user.id },
     orderBy: { createdAt: "desc" },
   })
 
@@ -31,7 +31,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
               {user.sapaan} {user.panggilan}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {user.waNumber} · {user.level} — {user.levelName}
+              {user.waNumber ?? "—"} · {user.level} — {user.levelName}
             </p>
             {user.email && <p className="text-sm text-muted-foreground">{user.email}</p>}
           </div>
@@ -103,13 +103,15 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-border bg-white p-5">
-            <h2 className="text-sm font-bold text-foreground">Edit Nomor WhatsApp</h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Untuk kasus user salah input WA saat checkout. Wajib verifikasi Order ID. Tercatat di Audit Log.
-            </p>
-            <EditWaForm userId={user.id} currentWaNumber={user.waNumber} />
-          </div>
+          {user.waNumber && (
+            <div className="rounded-xl border border-border bg-white p-5">
+              <h2 className="text-sm font-bold text-foreground">Edit Nomor WhatsApp</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Untuk kasus user salah input WA saat checkout. Wajib verifikasi Order ID. Tercatat di Audit Log.
+              </p>
+              <EditWaForm userId={user.id} currentWaNumber={user.waNumber} />
+            </div>
+          )}
           <div className="rounded-xl border border-border bg-white p-5">
             <h2 className="text-sm font-bold text-foreground">Status Akun</h2>
             <p className="mt-1 text-xs text-muted-foreground">

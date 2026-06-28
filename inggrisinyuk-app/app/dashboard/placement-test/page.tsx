@@ -147,7 +147,7 @@ export default function PlacementTestPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ answers }),
     })
-    router.replace("/dashboard/panduan")
+    router.replace("/dashboard/panduan-penggunaan")
   }
 
   if (step === "intro") {
@@ -215,7 +215,7 @@ export default function PlacementTestPage() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ dismissedPlacementTest: true, level: "A1" }),
                   })
-                  router.replace("/dashboard/panduan")
+                  router.replace("/dashboard/panduan-penggunaan")
                 }}
                 className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline underline-offset-4 decoration-muted-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground/50"
               >

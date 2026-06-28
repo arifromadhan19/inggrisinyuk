@@ -25,19 +25,21 @@ const SEED_ADMINS = [
 ]
 
 async function main() {
+  const userByWaNumber = new Map<string, { id: string }>()
   for (const user of SEED_USERS) {
-    await db.user.upsert({
+    const created = await db.user.upsert({
       where: { waNumber: user.waNumber },
       create: user,
       update: user,
     })
+    userByWaNumber.set(user.waNumber, created)
   }
 
   for (const txn of SEED_TRANSACTIONS) {
     await db.transaction.upsert({
       where: { orderId: txn.orderId },
-      create: txn,
-      update: txn,
+      create: { ...txn, userId: userByWaNumber.get(txn.waNumber)?.id },
+      update: { ...txn, userId: userByWaNumber.get(txn.waNumber)?.id },
     })
   }
 

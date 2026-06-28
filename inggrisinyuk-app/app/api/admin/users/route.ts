@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       },
     })
     await tx.transaction.create({
-      data: { orderId, waNumber: normalized, status: "success" },
+      data: { orderId, waNumber: normalized, userId: created.id, status: "success" },
     })
     await tx.auditLog.create({
       data: {

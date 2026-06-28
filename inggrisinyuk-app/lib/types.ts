@@ -1,6 +1,7 @@
 export interface UserDTO {
   id: string
-  waNumber: string
+  waNumber: string | null
+  email: string | null
   panggilan: string
   sapaan: string
   level: string
@@ -13,7 +14,8 @@ export interface UserDTO {
 
 export function toUserDTO(user: {
   id: string
-  waNumber: string
+  waNumber: string | null
+  email: string | null
   panggilan: string
   sapaan: string
   level: string
@@ -26,6 +28,7 @@ export function toUserDTO(user: {
   return {
     id: user.id,
     waNumber: user.waNumber,
+    email: user.email,
     panggilan: user.panggilan,
     sapaan: user.sapaan,
     level: user.level,

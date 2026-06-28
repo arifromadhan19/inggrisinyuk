@@ -2,53 +2,63 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
+import Link from "next/link"
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, BookOpen } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
 import type { UserDTO } from "@/lib/types"
-import { buildVocabUrl, type VocabDayData } from "@/lib/materi/vocab-shared"
-import { buildGrammarUrl, type GrammarDayData } from "@/lib/materi/grammar-shared"
-import { buildListeningUrl, type ListeningDayData } from "@/lib/materi/listening-shared"
-import { VOCAB_A1_DAYS } from "@/lib/materi/vocabulary-a1"
-import { VOCAB_A2_DAYS } from "@/lib/materi/vocabulary-a2"
-import { VOCAB_B1_DAYS } from "@/lib/materi/vocabulary-b1"
-import { GRAMMAR_A1_DAYS } from "@/lib/materi/grammar-a1"
-import { GRAMMAR_A2_DAYS } from "@/lib/materi/grammar-a2"
-import { GRAMMAR_B1_DAYS } from "@/lib/materi/grammar-b1"
-import { GRAMMAR_B2_DAYS } from "@/lib/materi/grammar-b2"
-import { GRAMMAR_C1_DAYS } from "@/lib/materi/grammar-c1"
-import { GRAMMAR_C2_DAYS } from "@/lib/materi/grammar-c2"
-import { LISTENING_A1_DAYS } from "@/lib/materi/listening-a1"
-import { LISTENING_A2_DAYS } from "@/lib/materi/listening-a2"
-import { LISTENING_B1_DAYS } from "@/lib/materi/listening-b1"
-import { LISTENING_B2_DAYS } from "@/lib/materi/listening-b2"
+// Data files loaded dynamically per module+level — prevents ~1.5 MB of static strings
+// from entering the SSR bundle, which triggered Turbopack "require is not defined".
+interface DayData { day: number; topik: string; urlTemplate: string }
 
-// Materi Vocabulary per level CEFR — lihat architecture.md §6.3. Level tanpa
-// materi (B2+) belum punya entry di sini; topik akan tampil dari MODULE_DATA
-// tapi tanpa link aktif (vocabDayData jadi null, sama seperti modul lain yang
-// belum punya precomputed URL).
-const VOCAB_DAYS_BY_LEVEL: Partial<Record<string, VocabDayData[]>> = {
-  A1: VOCAB_A1_DAYS,
-  A2: VOCAB_A2_DAYS,
-  B1: VOCAB_B1_DAYS,
+function buildChatGPTUrl(template: string, sapaan: string, panggilan: string): string {
+  return template
+    .replace("%5BSAPAAN%5D", encodeURIComponent(sapaan))
+    .replace("%5BPANGGILAN%5D", encodeURIComponent(panggilan))
 }
 
-const GRAMMAR_DAYS_BY_LEVEL: Partial<Record<string, GrammarDayData[]>> = {
-  A1: GRAMMAR_A1_DAYS,
-  A2: GRAMMAR_A2_DAYS,
-  B1: GRAMMAR_B1_DAYS,
-  B2: GRAMMAR_B2_DAYS,
-  C1: GRAMMAR_C1_DAYS,
-  C2: GRAMMAR_C2_DAYS,
+type Loader = () => Promise<DayData[]>
+const DATA_LOADERS: Partial<Record<string, Partial<Record<string, Loader>>>> = {
+  vocabulary: {
+    A1: () => import("@/lib/materi/vocabulary-a1").then(m => m.VOCAB_A1_DAYS),
+    A2: () => import("@/lib/materi/vocabulary-a2").then(m => m.VOCAB_A2_DAYS),
+    B1: () => import("@/lib/materi/vocabulary-b1").then(m => m.VOCAB_B1_DAYS),
+    B2: () => import("@/lib/materi/vocabulary-b2").then(m => m.VOCAB_B2_DAYS),
+    C1: () => import("@/lib/materi/vocabulary-c1").then(m => m.VOCAB_C1_DAYS),
+    C2: () => import("@/lib/materi/vocabulary-c2").then(m => m.VOCAB_C2_DAYS),
+  },
+  grammar: {
+    A1: () => import("@/lib/materi/grammar-a1").then(m => m.GRAMMAR_A1_DAYS),
+    A2: () => import("@/lib/materi/grammar-a2").then(m => m.GRAMMAR_A2_DAYS),
+    B1: () => import("@/lib/materi/grammar-b1").then(m => m.GRAMMAR_B1_DAYS),
+    B2: () => import("@/lib/materi/grammar-b2").then(m => m.GRAMMAR_B2_DAYS),
+    C1: () => import("@/lib/materi/grammar-c1").then(m => m.GRAMMAR_C1_DAYS),
+    C2: () => import("@/lib/materi/grammar-c2").then(m => m.GRAMMAR_C2_DAYS),
+  },
+  listening: {
+    A1: () => import("@/lib/materi/listening-a1").then(m => m.LISTENING_A1_DAYS),
+    A2: () => import("@/lib/materi/listening-a2").then(m => m.LISTENING_A2_DAYS),
+    B1: () => import("@/lib/materi/listening-b1").then(m => m.LISTENING_B1_DAYS),
+    B2: () => import("@/lib/materi/listening-b2").then(m => m.LISTENING_B2_DAYS),
+    C1: () => import("@/lib/materi/listening-c1").then(m => m.LISTENING_C1_DAYS),
+    C2: () => import("@/lib/materi/listening-c2").then(m => m.LISTENING_C2_DAYS),
+  },
+  speaking: {
+    A1: () => import("@/lib/materi/speaking-a1").then(m => m.SPEAKING_A1_DAYS),
+    A2: () => import("@/lib/materi/speaking-a2").then(m => m.SPEAKING_A2_DAYS),
+    B1: () => import("@/lib/materi/speaking-b1").then(m => m.SPEAKING_B1_DAYS),
+    B2: () => import("@/lib/materi/speaking-b2").then(m => m.SPEAKING_B2_DAYS),
+    C1: () => import("@/lib/materi/speaking-c1").then(m => m.SPEAKING_C1_DAYS),
+    C2: () => import("@/lib/materi/speaking-c2").then(m => m.SPEAKING_C2_DAYS),
+  },
 }
 
-// Materi Listening A1 — lihat materi/listening_analysis.md §6-§7. Level lain
-// belum punya entry; topik akan tampil dari MODULE_DATA tanpa link aktif,
-// sama seperti pola Vocab/Grammar di atas.
-const LISTENING_DAYS_BY_LEVEL: Partial<Record<string, ListeningDayData[]>> = {
-  A1: LISTENING_A1_DAYS,
-  A2: LISTENING_A2_DAYS,
-  B1: LISTENING_B1_DAYS,
-  B2: LISTENING_B2_DAYS,
+const MODULE_PANDUAN_ROUTE: Record<string, string> = {
+  vocabulary: "/dashboard/panduan-vocab",
+  grammar: "/dashboard/panduan-grammar",
+  speaking: "/dashboard/panduan-speaking",
+  listening: "/dashboard/panduan-listening",
+  roleplay: "/dashboard/panduan-roleplay",
+  professional: "/dashboard/panduan-professional-english",
 }
 
 const MODULE_DATA: Record<string, {
@@ -225,6 +235,7 @@ export default function ModulePage() {
   const moduleKey = typeof params.module === "string" ? params.module : ""
 
   const [user, setUser] = useState<UserDTO | null>(null)
+  const [daysForLevel, setDaysForLevel] = useState<DayData[] | null>(null)
   const [completedSet, setCompletedSet] = useState<Set<number>>(new Set())
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -250,6 +261,12 @@ export default function ModulePage() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!user || !moduleKey) return
+    setDaysForLevel(null)
+    DATA_LOADERS[moduleKey]?.[user.level]?.().then(setDaysForLevel)
+  }, [user, moduleKey])
+
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" })
     router.replace("/")
@@ -263,14 +280,39 @@ export default function ModulePage() {
     )
   }
 
-  if (!user) return null
+  if (!user) return (
+    <div className="flex min-h-screen flex-col bg-slate-50">
+      <div className="sticky top-0 z-50 border-b border-border bg-background shadow-sm">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="h-5 w-32 animate-pulse rounded-md bg-slate-200" />
+          <div className="h-8 w-8 animate-pulse rounded-full bg-slate-200" />
+        </div>
+      </div>
+      <div className="mx-auto w-full max-w-6xl flex-1 px-0 sm:px-6 sm:py-4">
+        <div className={`${mod.colorBg} px-4 pb-5 pt-5 sm:rounded-t-2xl sm:px-6`}>
+          <div className="h-4 w-24 animate-pulse rounded-md bg-white/20" />
+          <div className="mt-3 flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl leading-none">{mod.emoji}</span>
+              <div>
+                <div className="h-7 w-40 animate-pulse rounded-md bg-white/20" />
+                <div className="mt-1.5 h-3 w-56 animate-pulse rounded-md bg-white/20" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 h-1.5 w-full animate-pulse rounded-full bg-white/20" />
+        </div>
+        <div className="bg-white sm:rounded-b-2xl sm:border sm:border-t-0 sm:border-border sm:shadow-sm">
+          <div className="flex flex-col gap-2 p-3 sm:p-4">
+            {[1,2,3,4,5,6,7,8,9,10].map(i => (
+              <div key={i} className="h-14 animate-pulse rounded-2xl bg-slate-100" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 
-  // Materi vocab/grammar dipilih berdasarkan level CEFR user — lihat architecture.md §6.3.
-  // Level tanpa materi -> undefined, topics fallback ke MODULE_DATA statis (tanpa link aktif).
-  const vocabDaysForLevel = moduleKey === "vocabulary" ? VOCAB_DAYS_BY_LEVEL[user.level] : undefined
-  const grammarDaysForLevel = moduleKey === "grammar" ? GRAMMAR_DAYS_BY_LEVEL[user.level] : undefined
-  const listeningDaysForLevel = moduleKey === "listening" ? LISTENING_DAYS_BY_LEVEL[user.level] : undefined
-  const daysForLevel = vocabDaysForLevel ?? grammarDaysForLevel ?? listeningDaysForLevel
   const displayTopics = daysForLevel ? daysForLevel.map((d) => d.topik) : mod.topics
 
   const progress = Math.round((completedSet.size / 30) * 100)
@@ -413,13 +455,15 @@ export default function ModulePage() {
 
         {/* Panduan entry point */}
         <div className="flex items-center justify-end bg-white px-4 py-2.5 sm:border-x sm:border-border sm:px-6">
-          <a
-            href="/dashboard/panduan"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
-          >
-            <BookOpen className="size-3.5" />
-            Panduan
-          </a>
+          {MODULE_PANDUAN_ROUTE[moduleKey] && (
+            <Link
+              href={`${MODULE_PANDUAN_ROUTE[moduleKey]}?back=1`}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
+            >
+              <BookOpen className="size-3.5" />
+              Panduan {mod?.name}
+            </Link>
+          )}
         </div>
 
         {/* Topic list */}
@@ -429,16 +473,8 @@ export default function ModulePage() {
               const day = i + 1
               const isCompleted = completedSet.has(day)
               const isNext = !isCompleted && day === completedSet.size + 1
-              const vocabDayData = vocabDaysForLevel && day <= vocabDaysForLevel.length ? vocabDaysForLevel[day - 1] : null
-              const grammarDayData = grammarDaysForLevel && day <= grammarDaysForLevel.length ? grammarDaysForLevel[day - 1] : null
-              const listeningDayData = listeningDaysForLevel && day <= listeningDaysForLevel.length ? listeningDaysForLevel[day - 1] : null
-              const chatGPTUrl = vocabDayData
-                ? buildVocabUrl(vocabDayData.urlTemplate, user.sapaan, user.panggilan)
-                : grammarDayData
-                ? buildGrammarUrl(grammarDayData.urlTemplate, user.sapaan, user.panggilan)
-                : listeningDayData
-                ? buildListeningUrl(listeningDayData.urlTemplate, user.sapaan, user.panggilan)
-                : null
+              const dayData = daysForLevel && day <= daysForLevel.length ? daysForLevel[day - 1] : null
+              const chatGPTUrl = dayData ? buildChatGPTUrl(dayData.urlTemplate, user.sapaan, user.panggilan) : null
               return (
                 <div key={day}>
                   {mod.bridgeFromDay === day && (

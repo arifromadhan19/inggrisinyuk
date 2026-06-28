@@ -1,53 +1,28 @@
-import { db } from "@/lib/db"
-import { CheckoutForm } from "@/components/checkout-form"
-import { OrderSummary } from "@/components/order-summary"
+import { PaymentSuccessClient } from "@/components/payment-success-client"
 
-export default async function BeliPage({
+export default async function PaymentSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ pending?: string }>
+  searchParams: Promise<{ orderId?: string }>
 }) {
-  const { pending: pendingId } = await searchParams
-
-  let pending: { id: string; email: string; name: string | null } | null = null
-  let pendingExpired = false
-
-  if (pendingId) {
-    const record = await db.pendingSignup.findUnique({ where: { id: pendingId } })
-    if (!record || record.status !== "pending" || record.expiresAt < new Date()) {
-      pendingExpired = true
-    } else {
-      pending = { id: record.id, email: record.email, name: record.name }
-    }
-  }
+  const { orderId } = await searchParams
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
-      <main className="flex-1 px-4 py-8 sm:px-6 lg:py-12">
-        <div className="mx-auto w-full max-w-5xl mb-6">
-          <a
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            ← Kembali ke Beranda
-          </a>
-        </div>
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-10">
+        <div className="w-full max-w-[400px]">
+          <header className="mb-6 flex flex-col items-center gap-1 text-center">
+            <h1 className="text-2xl font-bold tracking-tight text-primary">Inggrisin Yuk</h1>
+          </header>
 
-        <div className="mx-auto w-full max-w-5xl">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
-            <div className="lg:order-2">
-              <OrderSummary />
-            </div>
-
-            <div className="lg:order-1">
-              <CheckoutForm pending={pending} pendingExpired={pendingExpired} />
-            </div>
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
+            <PaymentSuccessClient orderId={orderId ?? null} />
           </div>
         </div>
       </main>
 
       <footer className="border-t border-border px-4 py-4 sm:px-6">
-        <div className="mx-auto flex max-w-5xl flex-row items-center justify-center gap-6">
+        <div className="mx-auto flex max-w-2xl flex-row items-center justify-center gap-6">
           <p className="text-xs text-muted-foreground">© 2026 Inggrisin Yuk</p>
           <div className="flex items-center gap-5">
             <a href="#" title="Instagram" className="text-muted-foreground/50 transition-colors hover:text-muted-foreground">

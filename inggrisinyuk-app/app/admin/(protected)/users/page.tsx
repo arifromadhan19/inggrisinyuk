@@ -26,15 +26,19 @@ export default async function AdminUsersPage({
 
   const users = await db.user.findMany({ where, orderBy: { createdAt: "desc" } })
 
+  const waNumbers = users.map((u) => u.waNumber).filter((wa): wa is string => wa !== null)
+  const userIds = users.map((u) => u.id)
   const orders = users.length
     ? await db.transaction.findMany({
-        where: { waNumber: { in: users.map((u) => u.waNumber) } },
+        where: { OR: [{ waNumber: { in: waNumbers } }, { userId: { in: userIds } }] },
         orderBy: { createdAt: "desc" },
       })
     : []
+  const orderIdByUserId = new Map<string, string>()
   const orderIdByWaNumber = new Map<string, string>()
   for (const o of orders) {
-    if (!orderIdByWaNumber.has(o.waNumber)) orderIdByWaNumber.set(o.waNumber, o.orderId)
+    if (o.userId && !orderIdByUserId.has(o.userId)) orderIdByUserId.set(o.userId, o.orderId)
+    if (o.waNumber && !orderIdByWaNumber.has(o.waNumber)) orderIdByWaNumber.set(o.waNumber, o.orderId)
   }
 
   return (
@@ -113,7 +117,7 @@ export default async function AdminUsersPage({
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs font-semibold uppercase text-muted-foreground">
             <tr>
-              <th className="px-4 py-3">No WA</th>
+              <th className="px-4 py-3">WA / Email</th>
               <th className="px-4 py-3">Nama Panggilan</th>
               <th className="px-4 py-3">Order ID</th>
               <th className="px-4 py-3">Level</th>
@@ -124,10 +128,10 @@ export default async function AdminUsersPage({
           </thead>
           <tbody>
             {users.map((u) => {
-              const orderId = orderIdByWaNumber.get(u.waNumber)
+              const orderId = orderIdByUserId.get(u.id) ?? (u.waNumber ? orderIdByWaNumber.get(u.waNumber) : undefined)
               return (
                 <tr key={u.id} className="border-t border-border">
-                  <td className="px-4 py-3 font-medium text-foreground">{u.waNumber}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">{u.waNumber ?? u.email ?? "—"}</td>
                   <td className="px-4 py-3">
                     {u.sapaan} {u.panggilan}
                   </td>
