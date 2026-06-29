@@ -5,6 +5,8 @@ import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, BookOpen } from "lucide-react"
 import { DashboardNavbar } from "@/components/dashboard-navbar"
+import { RoleplayCharacterFormModal, RoleplayConfirmModal } from "@/components/roleplay-character-modal"
+import { buildRoleplayUrl, type RoleplayCharacter } from "@/lib/materi/roleplay-shared"
 import type { UserDTO } from "@/lib/types"
 // Data files loaded dynamically per module+level — prevents ~1.5 MB of static strings
 // from entering the SSR bundle, which triggered Turbopack "require is not defined".
@@ -49,6 +51,9 @@ const DATA_LOADERS: Partial<Record<string, Partial<Record<string, Loader>>>> = {
     B2: () => import("@/lib/materi/speaking-b2").then(m => m.SPEAKING_B2_DAYS),
     C1: () => import("@/lib/materi/speaking-c1").then(m => m.SPEAKING_C1_DAYS),
     C2: () => import("@/lib/materi/speaking-c2").then(m => m.SPEAKING_C2_DAYS),
+  },
+  roleplay: {
+    A1: () => import("@/lib/materi/roleplay-a1").then(m => m.ROLEPLAY_A1_DAYS),
   },
 }
 
@@ -240,7 +245,17 @@ export default function ModulePage() {
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
+  // Roleplay-only: lawan bicara (tokoh/karakter) yang dipilih user, persist ke
+  // localStorage per user supaya tidak perlu diketik ulang tiap Day — lihat
+  // materi/roleplay_analysis.md §2.2 untuk desain sistem 2-mode ini.
+  const [roleplayCharacter, setRoleplayCharacter] = useState<RoleplayCharacter | null>(null)
+  const [roleplayLastDay, setRoleplayLastDay] = useState<number | null>(null)
+  const [roleplayPendingDay, setRoleplayPendingDay] = useState<number | null>(null)
+  const [showRoleplayConfirm, setShowRoleplayConfirm] = useState(false)
+  const [showRoleplayForm, setShowRoleplayForm] = useState(false)
+
   const mod = MODULE_DATA[moduleKey]
+  const isRoleplay = moduleKey === "roleplay"
 
   useEffect(() => {
     fetch("/api/me").then(async (res) => {
@@ -266,6 +281,18 @@ export default function ModulePage() {
     setDaysForLevel(null)
     DATA_LOADERS[moduleKey]?.[user.level]?.().then(setDaysForLevel)
   }, [user, moduleKey])
+
+  useEffect(() => {
+    if (!user || !isRoleplay) return
+    const stored = window.localStorage.getItem(`roleplay_character_${user.id}`)
+    if (!stored) return
+    try {
+      const parsed = JSON.parse(stored) as RoleplayCharacter
+      if (parsed?.mode && parsed?.value) setRoleplayCharacter(parsed)
+    } catch {
+      // Preferensi lokal yang corrupt/lama — abaikan, user akan diminta isi ulang.
+    }
+  }, [user, isRoleplay])
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" })
@@ -341,6 +368,64 @@ export default function ModulePage() {
     setCompletedSet(prev => { const next = new Set(prev); next.add(day); return next })
   }
 
+  function getDayData(day: number): DayData | null {
+    return daysForLevel && day <= daysForLevel.length ? daysForLevel[day - 1] : null
+  }
+
+  function persistRoleplayCharacter(character: RoleplayCharacter) {
+    setRoleplayCharacter(character)
+    if (user) window.localStorage.setItem(`roleplay_character_${user.id}`, JSON.stringify(character))
+  }
+
+  function openRoleplayDay(day: number, dayData: DayData, character: RoleplayCharacter) {
+    if (!user) return
+    const url = buildRoleplayUrl(dayData.urlTemplate, user.sapaan, user.panggilan, character)
+    window.open(url, "_blank", "noopener,noreferrer")
+    if (!completedSet.has(day)) handleCompleteDay(day)
+    setRoleplayLastDay(day)
+  }
+
+  function handleRoleplayDayClick(day: number, dayData: DayData) {
+    if (!roleplayCharacter) {
+      setRoleplayPendingDay(day)
+      setShowRoleplayForm(true)
+      return
+    }
+    if (roleplayLastDay === day) {
+      openRoleplayDay(day, dayData, roleplayCharacter)
+      return
+    }
+    setRoleplayPendingDay(day)
+    setShowRoleplayConfirm(true)
+  }
+
+  function handleRoleplayConfirmContinue() {
+    if (roleplayPendingDay === null || !roleplayCharacter) return
+    const dayData = getDayData(roleplayPendingDay)
+    if (dayData) openRoleplayDay(roleplayPendingDay, dayData, roleplayCharacter)
+    setShowRoleplayConfirm(false)
+    setRoleplayPendingDay(null)
+  }
+
+  function handleRoleplayConfirmChange() {
+    setShowRoleplayConfirm(false)
+    setShowRoleplayForm(true)
+  }
+
+  function handleRoleplayFormSubmit(character: RoleplayCharacter) {
+    if (roleplayPendingDay === null) return
+    persistRoleplayCharacter(character)
+    const dayData = getDayData(roleplayPendingDay)
+    if (dayData) openRoleplayDay(roleplayPendingDay, dayData, character)
+    setShowRoleplayForm(false)
+    setRoleplayPendingDay(null)
+  }
+
+  function closeRoleplayModals() {
+    setShowRoleplayConfirm(false)
+    setShowRoleplayForm(false)
+    setRoleplayPendingDay(null)
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
@@ -487,7 +572,45 @@ export default function ModulePage() {
                       <div className="h-px flex-1 bg-amber-200" />
                     </div>
                   )}
-                  {chatGPTUrl ? (
+                  {isRoleplay && dayData ? (
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleRoleplayDayClick(day, dayData)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleRoleplayDayClick(day, dayData) } }}
+                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all cursor-pointer ${
+                        isCompleted
+                          ? "border-transparent bg-slate-50 hover:bg-slate-100"
+                          : isNext
+                          ? "border-border bg-white shadow-sm"
+                          : "border-border/40 bg-white hover:border-border hover:shadow-sm"
+                      }`}
+                      style={isNext ? { borderLeftColor: mod.accentColor, borderLeftWidth: "3px" } : undefined}
+                    >
+                      <span className={`w-14 shrink-0 rounded-xl py-1 text-center text-[11px] font-bold tracking-wide ${
+                        isCompleted ? "text-slate-300" : isNext ? mod.colorBadge : "bg-slate-100 text-slate-500"
+                      }`}>DAY {day}</span>
+                      <span className={`flex-1 text-sm leading-snug ${
+                        isCompleted ? "text-slate-400" : isNext ? "font-semibold text-foreground" : "font-medium text-foreground/80"
+                      }`}>{topic}</span>
+                      {isCompleted ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleResetDay(day); }}
+                          title="Klik untuk reset topik ini"
+                          className="group flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 transition-all hover:bg-red-100 hover:text-red-400 cursor-pointer"
+                        >
+                          <CheckCircle2 className="size-5 group-hover:hidden" />
+                          <RotateCcw className="hidden size-4 group-hover:block" />
+                        </span>
+                      ) : (
+                        <span className={`flex size-8 shrink-0 items-center justify-center rounded-full ${isNext ? mod.colorArrow : "bg-slate-100"}`}>
+                          <ArrowRight className={`size-4 ${isNext ? "text-white" : "text-slate-400"}`} />
+                        </span>
+                      )}
+                    </div>
+                  ) : chatGPTUrl ? (
                     <a
                       href={chatGPTUrl}
                       target="_blank"
@@ -616,6 +739,22 @@ export default function ModulePage() {
           </div>
         </div>
       </footer>
+
+      {showRoleplayConfirm && roleplayCharacter && (
+        <RoleplayConfirmModal
+          character={roleplayCharacter}
+          onContinue={handleRoleplayConfirmContinue}
+          onChangeCharacter={handleRoleplayConfirmChange}
+          onClose={closeRoleplayModals}
+        />
+      )}
+      {showRoleplayForm && (
+        <RoleplayCharacterFormModal
+          initialMode={roleplayCharacter?.mode}
+          onSubmit={handleRoleplayFormSubmit}
+          onClose={closeRoleplayModals}
+        />
+      )}
     </div>
   )
 }

@@ -456,7 +456,7 @@ Setiap modul memiliki halaman sub-fitur tersendiri yang menampilkan daftar topik
 - Gunakan headphone untuk latihan listening dan speaking
 - Aktifkan Voice Mode di ChatGPT untuk pengalaman speaking yang lebih natural
 - Konsisten belajar minimal **1 topik per hari** untuk menjaga streak — streak dihitung dari klik pertama topik di hari tersebut
-- Manfaatkan trigger khusus di sesi ChatGPT: `clue`, `Let's start speaking!`, `How to say...`, `pause`, `end`
+- Manfaatkan trigger khusus di sesi ChatGPT: `clue`, `Let's start speaking!` (Speaking/Grammar/Listening), `Let's act it out!` (Roleplay Practice), `How to say...`, `pause`, `end`
 
 **Tombol Panduan di Halaman Sub-Fitur:**
 
@@ -873,25 +873,47 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Listening di satu level. Di
 
 ### 4.6 Modul 5 — Roleplay Practice
 
-Modul puncak yang menggabungkan semua skill dalam simulasi percakapan nyata dengan AI. Tersedia dua mode: Roleplay dengan teks dialog (Read Convo) dan improvisasi langsung (Improvise Convo).
+> **Keputusan desain (research-backed, Juni 2026):** Mekanisme modul ini direvisi berdasarkan deep analysis kompetitor + riset SLA/CEFR lengkap di [materi/roleplay_analysis.md](materi/roleplay_analysis.md) — dokumen ini hanya menyimpan ringkasan keputusan; **roleplay_analysis.md menang kalau ada detail yang berbeda**. Dua perubahan utama vs versi sebelumnya: (1) **sistem pemilihan tokoh 2-mode** menggantikan input nama tokoh bebas tanpa pilihan, (2) **flow tunggal yang mengalir** menggantikan "2 sub-modul terpisah" (Read & Convo vs Improvise Convo) yang harus dipilih user di awal, (3) **Feedback 6 Langkah diperkaya jadi 8 Langkah** mengikuti pola pengayaan yang sudah diterapkan di Vocab/Grammar/Speaking (§5.6–5.7).
 
-**Sub-Modul Roleplay Practice:**
+Modul puncak yang menggabungkan semua skill dalam simulasi percakapan nyata dengan AI yang berperan sebagai lawan bicara pilihan user.
 
-| Sub-Modul | Deskripsi | Mekanisme |
+**Sistem Pemilihan Tokoh/Karakter — 2 Mode:**
+
+Sebelum sesi dimulai, user **wajib** memilih satu dari dua mode (tab mutually-exclusive, field wajib diisi):
+
+| Mode | Deskripsi | Contoh Hint di Form |
 |---|---|---|
-| Read & Convo | Baca dialog teks bersama AI yang berperan sebagai tokoh pilihan user | User pilih tokoh. AI tampilkan dialog 5–8 turn dalam tabel 3 kolom (Speaker / English / Indonesia). Sesi baca bergantian. Setelah selesai, bisa lanjut improvise. |
-| Improvise Convo | Ngobrol bebas dengan AI yang berperan sebagai tokoh fiksi/nyata pilihan user | User pilih topik dan tokoh. AI langsung masuk karakter. Tidak ada teks dialog — murni improvisasi. Trigger khusus: `clue`, `pause`, `How to say...`, `end`. |
+| 🎭 Tokoh Terkenal | Tulis nama tokoh nyata atau fiksi yang ingin diajak ngobrol — sejarah, publik figur, film, series, anime, buku | *"Contoh: Sherlock Holmes, BJ Habibie..."* |
+| ✏️ Buat Karaktermu | Deskripsikan kepribadian, profesi, atau ciri khas lawan bicara impian secara bebas — tanpa perlu nama tokoh nyata | *"Contoh: Pria ramah bersuara merdu, profesinya pilot, suka bercanda dan selalu positif"* |
 
-**Struktur Analisis & Feedback — Roleplay Practice (ditampilkan di akhir sesi setelah trigger `end`):**
+Tokoh/karakter yang dipilih **tersimpan** di profil user — saat membuka topik (Day) baru di modul ini, sistem menawarkan **"Lanjut dengan [tokoh]?"** atau **"Ganti Tokoh/Karakter"** sebelum membuka ChatGPT, supaya user tidak perlu mengetik ulang setiap sesi kecuali memang ingin ganti. Day 31 (Level Placement Test) selalu memakai tokoh baru/acak, tidak memakai tokoh tersimpan — supaya test mengukur kemampuan adaptasi ke lawan bicara baru.
+
+Terlepas dari tokoh/karakter yang dipilih, **tingkat kesulitan interaksi** (seberapa kooperatif atau menantang lawan bicara merespons) dikalibrasi otomatis sesuai level CEFR aktif user — A1–A2 selalu kooperatif & sabar, B1 mulai realistis, B2 mulai menantang/push back, C1–C2 sepenuhnya menantang tanpa dilunakkan. Detail mekanisme & rationale riset di roleplay_analysis.md §2.2–§3.3.
+
+**Mekanisme Belajar (flow tunggal, mengalir):**
+
+1. User pilih topik (Day) → pilih/lanjutkan tokoh → ChatGPT terbuka dengan prompt terisi
+2. Kak Ara sapa singkat, jelaskan situasi topik hari itu, lalu tampilkan **dialog contoh** 5–8 turn (tabel 3 kolom: Speaker | English | Terjemahan Indonesia) — hanya 2 speaker (user + tokoh), gaya bicara tokoh konsisten in-character sepanjang dialog
+3. Di bawah dialog, tabel **Frasa Kunci** (5–8 frasa/idiom penting dari dialog: Frasa | Arti | Contoh Konteks)
+4. User aktifkan mode suara, ucapkan **"Let's act it out!"** → mode baca bergantian dimulai (Kak Ara baca baris tokoh, user baca baris sendiri) — tanpa pujian/arahan/komentar selama fase ini supaya tidak memutus imersi
+5. Jawaban user keluar dari skrip dialog → otomatis pindah ke improvisasi tanpa pengumuman, tetap in-character
+6. Dialog skrip selesai → ditawarkan lanjut improvisasi bebas. Trigger bantuan selama improvisasi: `clue` (hint singkat), `pause` (Kak Ara keluar karakter sebentar), `how to say...` (terjemahan singkat)
+7. User ucapkan `end` → Kak Ara keluar dari karakter, kembali sebagai coach untuk Feedback 8 Langkah
+
+**Struktur Analisis & Feedback — Roleplay Practice (8 Langkah, ditampilkan di akhir sesi setelah trigger `end`):**
 
 | # | Langkah | Output AI |
 |---|---|---|
-| 1️⃣ | **Naturalness Check** | Penilaian apakah ekspresi user terdengar natural seperti native speaker atau masih terasa kaku |
-| 2️⃣ | **Vocabulary Choice** | Saran pilihan kata yang lebih tepat atau natural untuk konteks percakapan yang terjadi |
-| 3️⃣ | **Grammar Highlights** | Koreksi ringkas grammar yang muncul selama sesi — hanya poin penting, tidak detail berlebihan |
-| 4️⃣ | **Flow & Fluency** | Penilaian kelancaran alur percakapan: respons terlalu singkat, terlalu bertele-tele, atau sudah pas |
-| 5️⃣ | **Analisa Level CEFR** | Penilaian keseluruhan sesi percakapan + saran konkret untuk naik level |
-| 6️⃣ | **Highlight Terbaik** | AI kutip 1–2 kalimat terbaik user selama sesi sebagai apresiasi dan referensi belajar |
+| 1️⃣ | **Tabel Momen Kunci** | 2–3 kalimat user paling representatif selama sesi vs versi native speaker — ≥95% natural ditandai OK |
+| 2️⃣ | **Saran Pilihan Kata** | 1–2 vocab/frasa lebih natural untuk konteks yang sama (lexical upgrade, bukan koreksi kesalahan) |
+| 3️⃣ | **Grammar Highlights** | Koreksi ringkas — maksimal 2 pola error terpenting, bukan daftar lengkap semua kesalahan |
+| 4️⃣ | **Discourse & Turn-Taking** | Apakah respons user nyambung dengan cue sosial dari lawan bicara (tokoh)? Giliran bicara mengalir natural atau mengabaikan apa yang baru dikatakan tokoh? |
+| 5️⃣ | **Pragmatic & Register Check** | Apakah respons user sesuai konteks sosial & kepribadian lawan bicara (tokoh) — terlalu formal/kasual untuk persona tokoh tersebut? |
+| 6️⃣ | **Catatan Pelafalan** | Kata yang janggal/salah diucapkan selama sesi + simbol fonetik UK dalam tanda `/ /` |
+| 7️⃣ | **Analisa Level CEFR** | Penilaian keseluruhan sesi percakapan + saran konkret untuk naik level |
+| 8️⃣ | **Momen Terbaik** | AI kutip 1–2 kalimat terbaik user selama sesi sebagai apresiasi tulus, tidak berlebihan |
+
+> **Catatan Optimasi Roleplay (Juni 2026):** Feedback 6 Langkah diperkaya jadi 8 Langkah berdasarkan riset SLA. Langkah 4️⃣ **Discourse & Turn-Taking** dan 5️⃣ **Pragmatic & Register Check** ditambahkan sebagai dimensi interaksional yang spesifik untuk Roleplay (dialog dua-arah dengan lawan bicara berkarakter) — tidak ada di modul lain yang berformat monolog/Q&A. Berdasarkan CEFR Companion Volume (skala *Spoken Interaction*), Frontiers in Education (2024) soal pentingnya mengajarkan speech act dalam *full discourse sequence* dan *metapragmatic awareness*, serta Lyster & Ranta (1997) soal *focused corrective feedback* (Grammar Highlights dibatasi ke pola terpenting, bukan koreksi menyeluruh). Detail lengkap riset & sumber di [materi/roleplay_analysis.md](materi/roleplay_analysis.md) §2.4 dan §4.
 
 **30 Topik Roleplay Practice:**
 
@@ -929,11 +951,14 @@ Sesi evaluasi singkat setelah menyelesaikan 30 topik Roleplay Practice di satu l
 
 | Komponen Test | Detail |
 |---|---|
-| Format | Sesi roleplay improvisasi dengan skenario baru yang mencakup berbagai topik dari Day 1–30 |
+| Format | Sesi roleplay improvisasi dengan skenario **dan tokoh baru/acak** (bukan tokoh tersimpan user) yang mencakup berbagai topik dari Day 1–30 — supaya test mengukur adaptasi ke lawan bicara baru, bukan kenyamanan dengan tokoh yang sudah dihafal |
 | Durasi | Minimal 5 turn percakapan |
-| Fokus | Naturalness, fluency, kemampuan merespons situasi yang tidak terduga |
+| Fokus | Naturalness, fluency, kemampuan merespons situasi & lawan bicara yang tidak terduga — kesulitan interaksi dikalibrasi penuh ke level tersebut, tidak ada keringanan |
 | Output | **Score** (contoh: "88/100 — Excellent!") + penilaian keseluruhan sesi + rekomendasi naik level atau kuatkan level saat ini |
 | Bisa Diulang | Ya — kapan saja |
+| Skor | Wajib disimpan ke `module_test_results` (bukan state client — sesuai CLAUDE.md §4) |
+
+Detail lengkap kurikulum A2–C2, template prompt, dan audit URL-safety ada di [materi/roleplay_analysis.md](materi/roleplay_analysis.md).
 
 ---
 
