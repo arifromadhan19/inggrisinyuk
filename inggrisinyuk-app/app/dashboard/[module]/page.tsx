@@ -55,6 +55,12 @@ const DATA_LOADERS: Partial<Record<string, Partial<Record<string, Loader>>>> = {
   roleplay: {
     A1: () => import("@/lib/materi/roleplay-a1").then(m => m.ROLEPLAY_A1_DAYS),
   },
+  professional: {
+    A1: () => import("@/lib/materi/professional-a1").then(m => m.PROFESSIONAL_A1_DAYS),
+    A2: () => import("@/lib/materi/professional-a2").then(m => m.PROFESSIONAL_A2_DAYS),
+    B1: () => import("@/lib/materi/professional-b1").then(m => m.PROFESSIONAL_B1_DAYS),
+    B2: () => import("@/lib/materi/professional-b2").then(m => m.PROFESSIONAL_B2_DAYS),
+  },
 }
 
 const MODULE_PANDUAN_ROUTE: Record<string, string> = {
