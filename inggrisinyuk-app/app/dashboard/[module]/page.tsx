@@ -61,6 +61,7 @@ const DATA_LOADERS: Partial<Record<string, Partial<Record<string, Loader>>>> = {
     B1: () => import("@/lib/materi/professional-b1").then(m => m.PROFESSIONAL_B1_DAYS),
     B2: () => import("@/lib/materi/professional-b2").then(m => m.PROFESSIONAL_B2_DAYS),
     C1: () => import("@/lib/materi/professional-c1").then(m => m.PROFESSIONAL_C1_DAYS),
+    C2: () => import("@/lib/materi/professional-c2").then(m => m.PROFESSIONAL_C2_DAYS),
   },
 }
 
